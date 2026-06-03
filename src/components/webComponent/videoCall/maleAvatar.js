@@ -1,0 +1,2841 @@
+import React from "react";
+import { IMAGES } from "../../../assets";
+import "../../../assets/js/maleavatar/anatomy-settings";
+import "../../../assets/js/maleavatar/anatomy-settings-examples";
+import "../../../assets/js/maleavatar/interact-script";
+import "../../../assets/js/maleavatar/settings";
+import "../../../assets/js/maleavatar/spots-settings";
+import "../../../assets/styles/maleavatarcss/illustration-style.css";
+import $ from "jquery";
+import { useState } from "react";
+import { useAuth } from "../../../Navigation/Auth/ProvideAuth";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllAvatarCoordinateAction } from "../../../app/features/patient/avatar/avatar.slice";
+import { getFollowUpReasonByAppointmentIdAction } from "../../../app/features/patient/searchaDoctor/searchaDoctor.slice";
+
+export const Maleavatar = (props) => {
+  let [avatarData, setAvatarData] = useState([]);
+  let [switchAvatar, setswitchAvatar] = useState("Front");
+  let [switchFemaleAvatar, setswitchFemaleAvatar] = useState("Front");
+  let auth = useAuth();
+  let dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      getAllAvatarCoordinateAction({
+        appointmentId: props?.SlotListingData?.appointmentId,
+      })
+    );
+    dispatch(
+      getFollowUpReasonByAppointmentIdAction({
+        appointmentId: props?.SlotListingData?.appointmentId,
+      })
+    );
+  }, [dispatch, props, auth]);
+
+  // console.log("asdgakhsdsa", props?.SlotListingData);
+
+  let avatarBodyparts = useSelector((state) => state.avatar);
+  let getFollowUpReasonByAppointmentId = useSelector(
+    (state) => state.searchDoctor
+  );
+
+  function avatarValues(val) {
+    let avatarDataArray = [...avatarData];
+    if (val.style.fill === "rgba(255, 0, 0, 0)") {
+      avatarDataArray.push(val.classList.value);
+    } else {
+      avatarDataArray = avatarData.filter(
+        (item) => item !== val.classList.value
+      );
+    }
+
+    setAvatarData(avatarDataArray);
+  }
+
+  let bodypartsarraylist =
+    avatarBodyparts?.getAllAvatarCoordinate?.avatarCoordinates;
+
+  let bodyPartsArray = [];
+  for (let i = 0; i < bodypartsarraylist?.length; i++) {
+    bodyPartsArray.push(bodypartsarraylist?.[i]?.bodyPart);
+  }
+  console.log("asjhdjksahfdasa", bodyPartsArray.includes("front-abdomen"));
+
+  return (
+    <>
+      <div className="container card-height-style">
+        {getFollowUpReasonByAppointmentId?.getFollowUpReasonByAppointmentId
+          ?.data === null ||
+        getFollowUpReasonByAppointmentId?.getFollowUpReasonByAppointmentId
+          ?.data === undefined ? (
+          <>
+            <div className="">
+              {/* {avatarBodyparts.getAllAvatarCoordinate.avatarCoordinates?.map(
+            (list, index) => {
+              return ( */}
+              <>
+                {props?.SlotListingData?.patientGenderId === 7 ||
+                props?.SlotListingData?.genderId === 7 ? (
+                  <>
+                    <div className="card-body card-body-height-for-avatar">
+                      <div className="row">
+                        <div className="col-md-12">
+                          <span
+                            className="me-2 mb-3 span-class-style cursor"
+                            onClick={() => setswitchAvatar("Front")}
+                          >
+                            {" "}
+                            Front
+                          </span>
+                          <span
+                            className="mr-1 mb-3 span-class-style cursor"
+                            onClick={() => setswitchAvatar("Back")}
+                          >
+                            {" "}
+                            Back
+                          </span>
+                          <div className="row">
+                            <div className="col-md-4 col-lg-4 col-12">
+                              <h6 class="text-uppercase mt-4">
+                                Selected Body Parts
+                              </h6>
+                              {/* <p class="txt">{avatarData.toString()}</p> */}
+                              <div className="avatar-body-part-fixed-height">
+                                {bodyPartsArray.map((string, index) => (
+                                  <ul key={index}>
+                                    <li>{string}</li>
+                                  </ul>
+                                  // <p key={index}>{string}</p>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="col-md-8 col-lg-8 col-12 webside-parent-class">
+                              <div className="form-group center">
+                                <span id="anatip" />
+                                <div id="anawrapper">
+                                  {/* V1.000.2.3 JS*/}
+                                  {switchAvatar === "Front" ? (
+                                    <>
+                                      <div
+                                        id="basea"
+                                        className={
+                                          switchAvatar === "Front"
+                                            ? " "
+                                            : "avatarDisplay"
+                                        }
+                                      >
+                                        <svg
+                                          version="1.1"
+                                          // onClick={(e) => avatarValues(e.target)}
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="1390px"
+                                          height="1370px"
+                                          viewBox="0 0 1390 1370"
+                                          xmlSpace="preserve"
+                                        >
+                                          <image
+                                            overflow="visible"
+                                            width={1390}
+                                            height={1370}
+                                            xlinkHref={IMAGES.MODELA}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana1"
+                                            className="front-head"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M418.334,70C416.668,38,382,19,363,19c-30.833,0-50.167,31.5-53.167,44.5c-1.915,8.295-2.833,23.5-2.5,28.167s1,12.333,0.667,16.167c2.04,7.695,6.667,23,6.667,33c0.667,5.167,1.167,12.5,3.333,18.833c3,4,22.5,23.333,44.167,23.333s36.5-8.667,45.708-23c2.625-5.625,5-15.25,4.75-18.625c-0.708-5.125,4.708-28.042,5.709-32.708C419.001,101.334,420,102,418.334,70z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-head"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana2"
+                                            className="front-eye-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M340.5,102.25c8.561,0,14.5-4.197,14.5-9.375s-5.939-9.375-14.5-9.375S325,87.697,325,92.875S331.939,102.25,340.5,102.25z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-eye-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana3"
+                                            className="front-eye-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M388.5,102.25c8.561,0,15.5-4.197,15.5-9.375s-6.939-9.375-15.5-9.375S374,87.697,374,92.875S379.939,102.25,388.5,102.25z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-eye-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana4"
+                                            className="front-ear-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M299.833,106c-4,4-1.833,17-0.833,20.667s5.833,14.667,7.167,15.833s5.167,4.833,8.5-1.667c0-10-4.627-25.305-6.667-33C307,106,303.833,102,299.833,106z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-ear-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana5"
+                                            className="front-ear-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M412.625,141.375c3.75,6.375,8.875,3.25,10-1.75s7.625-7.875,6.75-23.625s-8.041-11.667-11.041-7.333C417.333,113.333,411.917,136.25,412.625,141.375z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-ear-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana6"
+                                            className="front-nose"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M355.375,105.25c-0.375,3.125-5,6.375-5.625,13.125c-0.438,4.731,6.25,7.5,10.25,6.5c5,2.625,6.75,0.625,9.875-0.625c5.75,0.875,8-3.25,8-7.75s-4.375-6.75-4.875-12.25s-3.375-7.625-3.125-13.5s-2.375-9.875-6.086-9.875c-5.21,0-6.289,7.875-5.914,10.625S355.75,102.125,355.375,105.25z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-nose"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana7"
+                                            className="front-mouth"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M374.25,133.25c-2.256-2.723-6.231-1.652-7.875-0.75c-0.882,0.484-3.5,0.875-5.125-0.375s-6.125-0.125-7.375,1.625s-11.75,5.125-12.625,8.125s8.625,3.25,11,4.125s4.5,3.75,13.125,3.75s10.966-2.787,13.25-3.25s8.125-1.125,8.5-3.5S377.875,137.625,374.25,133.25z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-mouth"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana8"
+                                            className="front-neck"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M307.667,244.167c15.667-0.833,41.167-2.166,45.333,3.667s15.834,6,19.667,0s38.028-6.245,50.833-4.333c4.95,0.739,9.833,0.81,14.438,0.363c10.976-1.066,20.373-5.078,25.342-10.017c-8.889,0.081-18.524-5.195-31.03-10.721C416.125,216,407.625,207.25,407,204.5s0.125-34.5,0.875-44.5c-9.208,14.333-24.041,23-45.708,23S321,163.667,318,159.667c2.167,6.333,1.5,29.833,0.75,45.333c-8.5,15.25-40,24-48,27.5c2.042,1.655,10.695,6.598,20.857,9.508C296.793,243.493,302.373,244.448,307.667,244.167z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-neck"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana9"
+                                            className="front-chest"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M486.5,295c-2.018-20.749-37.75-48.25-48.562-51.137c-4.605,0.447-9.488,0.376-14.438-0.363c-12.805-1.911-47-1.667-50.833,4.333s-15.5,5.833-19.667,0s-29.667-4.5-45.333-3.667c-5.294,0.281-10.873-0.674-16.059-2.159c-8.004,3.48-46.033,26.426-52.127,58.308c-0.459,2.402-0.744,4.852-0.814,7.351c-1,35.667,0.003,72.11-0.165,85.722c0.383-0.096,9.666,25.111,12.166,30.778S255.75,442,259.25,448.75C267.5,456.5,306,474,332.5,467s36.5-6.244,65,0.128s52.668-2.794,73.084-27.211c1.25-3.25,4.75-11.75,5.333-15s2.667-6.999,4.084-9.749s7.455-21.675,8.005-21.176C488.678,380.65,487.667,307.001,486.5,295z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-chest"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana10"
+                                            className="front-abdomen"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M397.5,467.128C369,460.756,359,460,332.5,467s-65-10.5-73.25-18.25c3.5,6.75,2,12,3.75,17.75s5,21.334,0.5,41.501s-1.667,35.666-0.5,40.166c0.785,3.029,2.326,5.001,1.419,8.813C276,568.5,294.834,591.5,364.917,591.5s86.417-20.498,98.75-33.499c-1.666-4.5-0.501-12,2.499-21.167s-3.499-44.667-3.833-52.833s2.501-21.5,2.751-27.584s4.25-13.25,5.5-16.5C450.168,464.334,426,473.5,397.5,467.128z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill:bodyPartsArray && bodyPartsArray?.includes(
+                                                "front-abdomen"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana11"
+                                            className="front-pelvis"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M364.917,591.5c-70.083,0-88.917-23-100.498-34.52c-0.44,1.852-1.458,4.137-3.419,7.188c-2.708,4.214-5.009,15.491-6.673,27.332c10.34,9.027,56.21,47.939,84.084,82.636c8.255-3.802,35.957-5.104,49.606-0.453c28.214-33.03,74.964-71.046,85.649-79.515c-1-13.666-8.334-31.667-10-36.167C451.334,571.002,435,591.5,364.917,591.5z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-pelvis"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana12"
+                                            className="front-pubis"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M338.412,674.136c7.636,9.505,13.921,18.693,17.755,26.864c1-2.167,2.75-2.833,6.833-3.167s5.75,0.834,6.917,1.584c3.8-7.69,10.229-16.519,18.101-25.734C374.368,669.031,346.667,670.334,338.412,674.136z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-pubis"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana13"
+                                            className="front-shoulder-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M239.48,300.316c6.094-31.882,44.123-54.828,52.127-58.308c-10.162-2.91-18.816-7.853-20.857-9.508c-8,3.5-15.5,2-26.75,4.25S202.5,250,190.5,274.5s-9.5,57-9.25,65.75c0.034,1.202,0.012,2.258-0.058,3.222C194.058,328.083,224.9,324.345,239.48,300.316z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-shoulder-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana14"
+                                            className="front-shoulder-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M486.5,295c13.5,30.001,46.022,30.211,58.595,48.439c-0.768-3.438-1.004-7.947-0.345-14.439c1.931-19.007-4.875-52.125-17.875-68.5s-53.125-26.75-63.595-26.654c-4.969,4.939-14.366,8.951-25.342,10.017C448.75,246.75,484.482,274.251,486.5,295z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-shoulder-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana15"
+                                            className="front-arm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M238.667,307.667c0.07-2.499,0.354-4.949,0.814-7.351c-14.58,24.029-45.423,27.768-58.288,43.156c-0.437,6.049-2.914,8.093-7.442,14.778C168.5,366,158.5,397.5,155,409.5c-0.507,1.738-0.896,3.229-1.221,4.551c-1.413,17.735,10.718,25.876,24.421,31.618c11.394,4.774,24.501,8.306,33.45,1.543c0.711-1.544,1.634-3.368,2.85-5.712c3.5-6.75,23.363-47.953,24.001-48.111C238.669,379.777,237.667,343.334,238.667,307.667z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-arm-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana16"
+                                            className="front-arm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M549.573,445.669c14.284-5.985,25.869-14.57,23.177-33.919c-1.625-11.25-17.875-51.25-22-57.25c-2.265-3.294-4.53-6.027-5.655-11.061C532.522,325.211,500,325.001,486.5,295c1.167,12.001,2.178,85.65,1.506,98.992c0.108,0.098,20.827,42.675,23.494,48.175C520.012,455.281,536.009,451.353,549.573,445.669z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-arm-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana17"
+                                            className="front-elbow-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M178.2,445.669c-13.704-5.742-25.834-13.883-24.421-31.618c-1.917,7.803-1.51,9.506-8.779,18.699c-5.907,7.47-15.794,29.063-22.538,48.927c15.882-28.244,68.495,4.695,75.547,19.871c6.154-16.332,11.13-43.69,11.49-47.172c0.245-2.366,0.814-4.26,2.15-7.163C202.702,453.975,189.594,450.443,178.2,445.669z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-elbow-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana18"
+                                            className="front-elbow-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M606,485.25c-2.028-7.858-4.954-16.438-9.03-24.074c-4.97-9.31-16.414-30.066-17.72-32.176c-3.25-5.25-5.336-9.194-6.5-17.25c2.692,19.349-8.893,27.934-23.177,33.919c-13.564,5.684-29.562,9.612-38.073-3.502c2.667,5.5,7,11.333,7,17.333c0,1.363,1.692,13.781,4.385,25.354c2.187,9.396,5.372,18.235,6.115,20.146C527.5,492,591.5,448,606,485.25z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-elbow-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana19"
+                                            className="front-forearm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M122.462,481.677c-2.96,8.722-5.318,17.111-6.462,23.823c-2.028,11.896-8.779,39.212-16.707,62.487c-1.735,5.094-3.563,9.992-5.337,14.495c1.722,9.015,32.508,23.476,42.632,18.606c1.457-2.714,2.764-5.01,3.745-6.587c4.667-7.5,11.917-19.251,24.917-35.251s25.5-39.75,32-55.75c0.255-0.629,0.508-1.285,0.76-1.953C190.958,486.372,138.345,453.433,122.462,481.677z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-forearm-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana20"
+                                            className="front-forearm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M632.833,581.061c-2.89-7.644-5.897-16.096-8.083-21.561c-4-10-12.75-51-18.75-74.25C591.5,448,527.5,492,529,505c7,18,35.75,60.25,40.375,65.875s16.49,23.007,19.5,28.25C595.414,609.279,634.667,590.667,632.833,581.061z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-forearm-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana21"
+                                            className="front-wrist-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M93.956,582.482c-5.112,12.975-9.774,22.651-10.456,24.143c-0.886,1.939-1.456,3.337-2.977,4.62c9.057,0.416,28.988,8.686,43.015,19.44c2.127-7.809,8.37-20.88,13.05-29.598C126.464,605.958,95.678,591.497,93.956,582.482z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-wrist-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana22"
+                                            className="front-wrist-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M648.75,611.25c-8.5-4-5.75-8.25-9.5-15c-1.7-3.061-4.019-8.847-6.417-15.189c1.834,9.606-37.419,28.219-43.958,18.064c1.544,2.689,5.188,10.48,8.506,17.668c3.15,6.824,6.007,13.104,6.494,13.957C618.75,618.834,640.333,610.666,648.75,611.25z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-wrist-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana23"
+                                            className="front-hand-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M67.75,616.375c-13.375,3.75-33.125,20.25-37.75,23.25s-7.75,8.375-11.875,10.5s-4.125,8.625,0,10.5s9.625,0.125,13-1.5s9.042-8.457,15.5-10.5c3.788-1.198,7.625-1.5,7.625,0.125s-8.5,22.375-9.125,25.5s-3.875,13.875-5.875,21.125s-5.5,21.25-6.75,29.25s0.875,11.75,5.125,12.625s7.875-7.625,8.646-10.625s2.854-12.75,3.979-15.5s6.625-18.75,8-22s2.375-8.625,4.375-7.75s-0.375,5.875-1.75,9.75S53.75,715.875,53,719.75s-5,19.75-5.25,22.5s-1.875,8.75,2.75,10.5s7.75-1.875,9.5-5.625S65.375,729.5,67.375,721s5.75-19.5,7.125-24s2.125-8,3.875-7.875s1.5,2.5,0.75,4.75S73,714.5,72,719.5s-4.25,16.125-5.375,20.375s-1.75,9.25,2.5,10.75s6.875-1.5,8.75-4.75s7.875-21.5,9.369-27.125s4.756-18.5,6.131-22.375s2.5-5.625,3.625-5.5s0.25,2.625-1.125,7s-5.375,18.5-7.125,25s-2.25,9.625,0,12s7.083-0.541,8.25-2.541s3-11,5.667-16.333c1.676-3.352,3.669-11.246,6.53-19.381c1.691-4.808,4.336-9.699,5.636-13.786c3.5-11,4.333-18.833,7-28.5s0.167-11.667,1-20.167c0.096-0.975,0.344-2.156,0.705-3.481c-14.027-10.755-33.958-19.024-43.015-19.44C78.612,612.857,75.198,614.287,67.75,616.375z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-hand-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana24"
+                                            className="front-hand-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M702.25,641.25c-2.75-3.75-17.5-11.5-21.75-14.5c-2.125-1.5-7.938-4.375-14.281-7.375S653,613.25,648.75,611.25c-8.417-0.584-30,7.584-44.875,19.5c1,1.75-0.875,7.125,0.125,16.25s4.125,23.25,6.375,32.125s7,18.375,8.5,22.875s9.403,29.364,12.625,32c2.75,2.25,7.5,0.75,8.25-2.75s-1.625-10.875-2.5-14.125s-5.625-19.25-6.5-21.75s-2-5.125-0.25-5.125s2.125,2.75,3.25,5.625s5.875,19.5,6.875,24.125s4.5,17,6.25,21.75s5,10,9,9.75s4.875-4.75,5.125-8.375s-5.875-23.5-6.375-27.625s-5.375-19.25-6.125-21.25s-1.375-5,0.625-5.125s2.875,5.625,3.75,8.625s9.75,31.875,10.25,35.5s2.625,14.5,6,17.75c2.744,2.643,5.625,3.875,8.625,0.875s2.25-10,0.875-15.25s-4.625-21.125-5.5-25s-6.375-20.875-7.25-24s-2.125-5.375-1.125-5.75s2.25,1.125,3.5,5.25s6.625,20.5,8.375,25.5s1.5,11.625,4.125,17.375s7,7.625,10.625,7.125s4.277-7.391,4.375-10.125s-4.75-20.5-6.25-27.375s-5.25-16.625-6.5-23s-7.375-23.375-8.625-26s-0.625-4.75,2.5-3.875s9.25,2.625,13,7.625s10.875,6.75,13.375,7s8.5,0.375,9.25-6.375S705,645,702.25,641.25z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-hand-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana25"
+                                            className="front-thigh-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M254.327,591.5c-2.021,14.389-3.102,29.611-2.827,34c0.5,8-6.5,46-11.5,70c-3.981,19.107-12.131,56.915-14.375,92.478c-0.575,9.105,0.172,18.063,0.375,26.522c0.845,35.062,9.541,55.489,16.139,69.427c35.654,13.2,53.799,56.767,88.484,34.358c2.478-11.204,8.03-39.965,9.627-52.285c1.75-13.5,10.083-66.333,11.815-88.167s1.269-38.833,0.435-43.166s-0.167-12.667-0.417-21.334s3.083-10.166,4.083-12.333c-3.834-8.171-10.12-17.359-17.755-26.864C310.538,639.439,264.667,600.527,254.327,591.5z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-thigh-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana26"
+                                            className="front-thigh-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M388.018,673.683c-7.872,9.216-14.301,18.044-18.101,25.734c1.167,0.75,3.083,5.083,4.333,8.083s1,20.75-0.25,31.5s1.5,59.75,3.75,71s8.417,55.334,10.084,67.001s5.166,31.5,7.166,39.833c36.334,25.833,52.479-20.023,89.334-33.168c5.667-10,13.999-27.333,15.999-52.333c0.874-10.926,1.603-27.168,0.824-43.078c-1.002-20.493-3.844-40.436-5.157-47.754c-2.333-13-14.834-82.834-17-92.667s-4.333-40-5.333-53.666C462.981,602.637,416.231,640.652,388.018,673.683z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-thigh-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana27"
+                                            className="front-knee-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M242.139,883.927c1.212,2.56,2.353,4.901,3.361,7.073c6.5,14,6,37.5,6.5,61c0.078,3.657,0.262,7.679,0.348,11.921c10.591,44.449,51.024,21.223,68.904,3.938c0.325-1.35,0.929-2.658,1.373-3.483c0.875-1.625,2.125-10.625,3.375-16.625s2-18.5,4-26.75c0.175-0.721,0.386-1.643,0.623-2.715C295.938,940.693,277.793,897.127,242.139,883.927z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-knee-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana28"
+                                            className="front-knee-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M395,916.834c2,8.333,4.333,14.167,4.333,24s4,22.167,5.167,25c17.417,18.167,61,46.833,69.25-8.834c0-11.5,3.25-39.334,3.584-50.334s1.333-13,7-23C447.479,896.811,431.334,942.667,395,916.834z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-knee-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana29"
+                                            className="front-leg-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M252.348,963.921c0.085,4.202,0.072,8.622-0.239,13.122c-1.393,20.15-4.799,41.913-4.109,52.957c1,16,4.5,62,7.5,83s6.875,83,7.125,87.5c0.06,1.082,0.008,2.26-0.107,3.478c6.992-11.484,36.463-9.869,44.754-6.101c-1.079-3.858-2.297-10.522-2.438-15.043c-0.167-5.333,7.5-47.167,8.333-58.333s3.667-29.5,4.333-33.333s5.75-17.168,9.5-25.918s3.5-20,2.5-27.25s-3.75-45.75-4.5-51.375s-2.25-13.125-3.5-15.125c-0.615-0.984-0.563-2.333-0.248-3.642C303.372,985.144,262.939,1008.37,252.348,963.921z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-leg-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana30"
+                                            className="front-leg-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M404.5,965.834c1.167,2.833-1.25,16.416-4.25,33.916s-4.083,48.751-3.083,56.751s9.667,28.833,11.833,35s0.667,8.833,2,20.833s7.167,47.334,9,59s1.5,21-0.667,27.167C426,1194,462,1191.5,465.5,1207c-0.75-4.25-1.75-10-1-22.25s5-60.25,8.25-87.75s6.75-82,4.5-96.5s-3.5-32-3.5-43.5C465.5,1012.667,421.917,984.001,404.5,965.834z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-leg-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana31"
+                                            className="front-ankle-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M262.518,1203.978c-0.363,3.847-1.388,8.108-1.768,11.147c-0.5,4,2.125,8.625,1.375,15.875c-0.034,0.332-0.091,0.67-0.146,1.008c12.665-4.423,40.242,8.668,48.998,21.075c1.177-7.814,1.063-15.23-0.478-19.082c-1.667-4.166-2.167-7.167-0.833-12.5s-0.667-18.667-1.833-21.834c-0.178-0.482-0.368-1.097-0.562-1.79C298.981,1194.108,269.51,1192.493,262.518,1203.978z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-ankle-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana32"
+                                            className="front-ankle-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M419.333,1198.501c-2.167,6.167-3.166,21-2.666,22.667s0.833,9.333-1,13.499s-1.667,13.334-0.667,21.5c6-13.583,37-29.917,50-23.667c-2-5.5-2.25-5.75-1-9.25s2.25-12,1.5-16.25C462,1191.5,426,1194,419.333,1198.501z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-ankle-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana33"
+                                            className="front-foot-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M261.979,1232.008c-1.15,7.047-6.68,15.393-10.854,23.742c-4.375,8.75-13,19.375-21,28.25s-10.375,26.375-10.125,29.5s3.125,5.875,6.125,5.5c0,1.125,1,2.875,4.25,2.5c0.25,2,0,6.25,8.25,5c4,4.875,7.875,4.625,10.75,1.75c5.292,6.314,10.383,6.492,15.75,5.809c4.375-0.558,11.125-7.809,12.25-10.559s2.25-3.875,5.875-6.75c1.972-1.563,3.795-4.086,5.156-8.824c1.141-3.973,1.957-10.098,2.261-12.758c0.667-5.833,0.667-10.834,4.5-21.334c8.667-3.667,14-10.333,15.5-18.833c0.113-0.642,0.215-1.28,0.311-1.918C302.221,1240.676,274.645,1227.585,261.979,1232.008z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-foot-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana34"
+                                            className="front-foot-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M415,1256.167c1,8.166,12,15,15,16.5s3,4.167,3.833,7s2.834,10.667,3.834,21s6.25,15.749,8.666,17.666s2.834,3,3.667,4.667s3.417,6.083,11.167,9.75s14.999-1.167,16.749-4.75c4.5,4.5,11.084,0.416,12.25-2.084c4.916,1.416,7.834-3.25,7.917-5.166c1.583,0.334,3.584-1.082,4.25-2.582c0.833,0.334,2.5,0.666,5-3.334s-3-17.5-4.167-21.667s-9.666-14.833-16.333-21.833s-7.833-11.333-12.5-18.667S467,1238,465,1232.5C452,1226.25,421,1242.584,415,1256.167z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "front-foot-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          {/* <rect
+                              transform="translate(332,15)"
+                              className="gob"
+                              x="587.5"
+                              y="1023.5"
+                              fill="#72B8FC"
+                              stroke="#6a6a6a"
+                              vectorEffect="non-scaling-stroke"
+                              width={287}
+                              height={272}
+                            />
+                            <image
+                              xlinkHref={IMAGES.MODELB}
+                              // onClick={() => setswitchAvatar("backAvatar")}
+                              x="71%"
+                              y="78%"
+                              height="200px"
+                              width="140px"
+                            />
+                            <g id="anaspotsa">
+                              <circle
+                                cx={441}
+                                cy={797}
+                                r={25}
+                                fill="#ff6600"
+                                stroke="#cc2900"
+                                strokeWidth={1}
+                                id="anaspotsa_0"
+                                cursor="pointer"
+                                display="none"
+                              />
+                              <circle
+                                cx={1032}
+                                cy={1085}
+                                r={20}
+                                fill="rgba(255, 0, 0, 0.3)"
+                                stroke="#FF0000"
+                                strokeWidth={1}
+                                id="anaspotsa_1"
+                                cursor="pointer"
+                                display="none"
+                              />
+                            </g> */}
+                                        </svg>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div
+                                        id="baseb"
+                                        className={
+                                          switchAvatar === "Back"
+                                            ? " "
+                                            : "avatarDisplay"
+                                        }
+                                      >
+                                        <svg
+                                          version="1.1"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          onClick={(e) =>
+                                            avatarValues(e.target)
+                                          }
+                                          width="1390px"
+                                          height="1370px"
+                                          viewBox="0 0 1390 1370"
+                                          xmlSpace="preserve"
+                                        >
+                                          <image
+                                            overflow="visible"
+                                            width={1390}
+                                            height={1370}
+                                            xlinkHref={IMAGES.MODELB}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana70"
+                                            className="back-head"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M412.806,156.076c3.058-18.988,9.442-66.107,10.527-83.743C424.666,50.667,394.333,17,362,17c-27.334,0-58.5,32-58,52.667c0.19,7.875,2,33,2.333,36.333c0.239,2.389,4.332,32.016,7.459,49.645C324,176.667,402.611,176.486,412.806,156.076z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-head"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana71"
+                                            className="back-neck"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M459.833,228c-28-9.5-48.999-27.333-49.999-29.5s0.166-30.667,1.5-34.5c0.248-0.713,0.773-3.584,1.472-7.924c-10.194,20.41-88.806,20.59-99.013-0.432c1.235,6.962,2.32,12.053,2.957,12.855c1.555,1.958,2.93,28.364,0.5,31.5c-7.805,10.073-31.475,20.792-49.208,27.5C289.75,221.5,441.908,224.22,459.833,228z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-neck"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana72"
+                                            className="back-back"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M501,353c2.836-16.7,6.264-36.969,4.097-48.71c-0.125-0.68-0.266-1.336-0.43-1.956c-3-11.333-7.667-52-44.834-74.333c-17.925-3.78-170.083-6.5-191.792-0.5c-39.458,21.5-44.542,68.75-45.542,74.5s0.5,26.25,2.25,36.75s8.25,29.583,4.625,66.375c1.125,0,1.5,3.5,1.875,6.125s4.25,16.75,9.25,23s9.25,25,13.25,32.5c4.468,5.507,41.373,10.639,83.746,11.485c9.657,0.193,19.599-1.733,29.504-1.776c9.978-0.044,19.919,1.793,29.499,1.512c39.579-1.163,72.98-6.345,77.196-11.47c2.613-5.708,6.414-14.637,7.473-18.167c1.5-5,2.666-9.167,4.833-12.667s7.833-18.083,8.666-21.083s2.167-9.417,3.334-9.5C497,389.667,498,370.667,501,353z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-back"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana73"
+                                            className="back-loin"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M396.499,477.97c-9.58,0.281-19.521-1.556-29.499-1.512c-9.906,0.043-19.847,1.969-29.504,1.776c-42.373-0.846-79.277-5.978-83.746-11.485c4,7.5,6.5,19,8.5,37.75s-2.25,32-3.25,37.75s-0.227,23.88,1.25,28c1.412,3.939,3.607,9.041-0.422,15.812c6.278-9.18,30.556-16.657,56.643-16.657c29.53,0,31.03,10.279,51.53,10.279c19,0,26-10.042,51.526-10.166c25.239-0.123,43.853,7.19,48.379,16.593c-0.532-1.279-0.915-2.17-1.072-2.61c-0.834-2.333-1.166-6.167-0.333-8.167s2.667-12.833,2.833-19s-3.667-30-4.667-34.833s1.667-28.5,2.334-33.333s3-14.667,4.333-16.833c0.392-0.637,1.273-2.456,2.361-4.833C469.479,471.625,436.078,476.807,396.499,477.97z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-loin"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana74"
+                                            className="back-buttocks"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M419.526,569.518C394,569.642,387,579.684,368,579.684c-20.5,0-22-10.279-51.53-10.279c-26.087,0-50.365,7.477-56.643,16.657c-0.185,0.311-0.366,0.62-0.578,0.938c-6,9-12,51.75-11.5,64s-2.5,24-4,32.5c0,19,7.324,25.063,15.316,37.142C279.76,751.914,317.235,774.904,351.5,741c2.75-2.875,6.75-8.875,7.75-11.625s2-3.25,4.375-3.25s3.75,1.125,4.25,2.875s3.792,8.5,7.292,11.334c37.774,39.903,74.878,12.96,94.414-18.404c8.533-13.701,14.134-14.93,14.134-38.43c-1.558-8.437-3.389-18.087-4.048-21.667c-1.167-6.333-0.5-24.333-2.666-42.667c-1.622-13.732-6.051-25.594-8.521-31.664c-0.206-0.505-0.398-0.97-0.574-1.393C463.379,576.708,444.765,569.395,419.526,569.518z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-buttocks"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana75"
+                                            className="back-shoulder-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M504.667,302.333c0.164,0.62,0.305,1.276,0.43,1.956c16.05,17.076,38.941,31.042,53.413,43.878c-0.086-0.138-0.174-0.282-0.26-0.417C558.5,327.5,563,297,546,269.25S487.833,237.5,459.833,228C497,250.333,501.667,291,504.667,302.333z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-shoulder-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana76"
+                                            className="back-shoulder-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M222.5,302c1-5.75,6.083-52.999,45.542-74.5c-8.126,3.074-15.006,5.307-18.542,6.25c-8.263,2.203-41.894,9.408-53.5,19.5c-17.25,15-26,35-27.5,62.75c-0.721,13.331,0,25.833,0,34.5C178.333,326.25,202.667,324.333,222.5,302z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-shoulder-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana77"
+                                            className="back-arm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M560.107,468.68c14.466-5.319,29.127-11.117,27.667-40.179c-2.005-7.583-4.833-13.009-8.024-28.751c-3.706-18.282-14.001-39.975-21.24-51.583c-14.472-12.836-37.362-26.802-53.413-43.878c2.167,11.742-1.261,32.011-4.097,48.71c-3,17.667-4,36.667-2.999,52.083C499.168,405,500.75,408,502,410.75c1.086,2.39,15.767,34.99,21.069,46.274C532.186,470.092,544.849,474.29,560.107,468.68z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-arm-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana78"
+                                            className="back-arm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M224.75,338.75c-1.75-10.5-3.25-31-2.25-36.75c-19.833,22.333-44.167,24.25-54,48.5c-6.833,10.667-18.25,33.75-20,44s-4.5,20-7.25,27.75c-3.98,34.526,10.693,40.75,26.143,46.43c16.538,6.08,29.232,0.639,38.288-15.131c1.1-2.171,2.2-4.311,3.152-6.215c3.5-7,16.417-34.458,17.292-37.333s2.125-4.875,3.25-4.875C233,368.333,226.5,349.25,224.75,338.75z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-arm-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana79"
+                                            className="back-elbow-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M568.824,504.292c39.135-10.364,46.681,1.813,50.268,8.767c-0.214-1.377-0.413-2.655-0.592-3.809c-2.75-17.75-17.75-47-19.5-49.75s-8.25-16.5-10.25-26.75c-0.298-1.528-0.625-2.92-0.976-4.249c1.46,29.062-13.201,34.86-27.667,40.179c-15.259,5.61-27.921,1.412-37.038-11.656c0.798,1.699,1.386,2.92,1.681,3.476c2.25,4.25,2.25,4.75,2.177,7.75s2.823,14.25,4.073,19.5c1.179,4.95,0.139,15.905,7.558,38.93C541.114,514.447,559.768,506.69,568.824,504.292z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-elbow-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana80"
+                                            className="back-elbow-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M167.393,468.68c-15.45-5.68-30.124-11.904-26.143-46.43c-2.75,7.75-1.75,15.25-6.5,23.5s-0.75,6.5-9.75,20c-4.221,6.332-8.992,20.141-13.178,35.472c-1.258,4.606-2.463,9.351-3.584,14.07c3.399-5.935,6.601-22.609,50.438-11c10.714,2.837,31.865,11.173,26.897,27.549c2.671-7.794,4.745-15.229,6.308-21.617c2.547-10.41,3.739-18.036,3.953-19.891c0.5-4.333,0.833-7.333,1.5-9.333s2.167-9.833,2.333-13.167c0.122-2.427,3.069-8.474,6.014-14.285C196.625,469.319,183.931,474.76,167.393,468.68z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-elbow-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana81"
+                                            className="back-forearm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M620.191,621.035c8.857-3.745,15.074-6.784,16.994-10.783c-1.959-5.819-4.01-12.795-5.436-20.252c-3.039-15.895-9.573-57.137-12.658-76.941c-3.587-6.955-11.133-19.131-50.268-8.767c-9.056,2.398-27.71,10.155-30.267,22.388c0.45,1.397,0.928,2.833,1.442,4.32c9,26,30,55.25,45.5,79.5c2.965,4.638,5.481,8.858,7.625,12.689C599.133,625.104,611.447,624.732,620.191,621.035z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-forearm-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana82"
+                                            className="back-forearm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M158.676,504.292c-43.837-11.609-47.038,5.065-50.438,11c-3.104,13.064-5.568,25.943-6.738,35.208c-2.207,17.467-8.379,42.596-11.756,56.062c-0.875,6.021,6.182,9.66,17.564,14.473c11.004,4.653,23.67,4.044,26.295,0.232c10.117-17.065,26.772-37.525,39.896-61.517c4.95-9.049,8.926-18.728,12.073-27.909C190.541,515.465,169.39,507.129,158.676,504.292z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-forearm-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana83"
+                                            className="back-wrist-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M648,637.75c-3.5-0.5-4-8.25-5.25-12.25c-0.702-2.246-3.058-7.8-5.564-15.248c-1.92,3.999-8.137,7.038-16.994,10.783c-8.745,3.698-21.058,4.07-27.066,2.155c9.067,16.197,11.432,25.37,12.375,29.144c0.527,2.109,0.643,3.571,0.461,4.91c8.146-4.652,34.231-16.276,43.574-19.125C648.977,637.944,648.459,637.815,648,637.75z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-wrist-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana84"
+                                            className="back-wrist-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M107.309,621.035c-11.382-4.813-18.439-8.452-17.564-14.473c-1.215,4.844-2.068,8.179-2.244,9.105c-0.667,3.5-4.164,10.214-6.167,18.333c-0.375,1.692-2.811,3.547-5.5,4.5C79.5,637.75,120.411,656.865,121,659c-1-4-1.25-8,7-27c1.483-3.416,3.387-6.993,5.604-10.733C130.979,625.079,118.313,625.688,107.309,621.035z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-wrist-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana85"
+                                            className="back-hand-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M675.668,654.333c-2.333-1-7.918-8.083-12.668-10.083c-4.127-1.738-9.761-4.982-13.464-6.132c-9.342,2.85-35.428,14.474-43.574,19.125c-0.221,1.623-0.881,3.065-1.795,5.257c-1.667,4-0.666,16.167,0.334,19.5c1,3.334,4.166,22.334,5.833,26s3,8.167,3.667,10.5s7.667,32,10.167,34.333s5.666,1.834,7-0.5s0.5-7.5,0-10.833s-1.667-9.833-2-12.5s-2.334-10.5-3.334-14.166c-1-3.667,1.334-3.668,3-1.5c1.666,2.166,3.334,8.666,4.167,11.833s3.5,16.166,4.333,20.666s2.834,17.667,5.834,20.834s5.666,3.333,8.166,1s1.167-7.333,0.834-10.167s-2.5-19.166-2.834-23s-3.833-14.334-4.666-20.5s2.666-1.834,3-0.5s4.166,14.833,4.666,18.333s3,15.667,3.5,22.667s3.667,13,4.834,14.5s6,2.167,7.5,0s1.166-5.667,1-9.333s-1.5-22.167-1.5-25.667s-4.5-19.834-5-23.5s1.333-1.834,2-0.166c0.667,1.666,4.999,19.166,5.833,22.833s1.166,7.333,1.833,12s3.833,9,6.333,10.333s5.5-1.166,6.5-3.833s-1.5-15.167-1.833-23.333s-1.5-11.334-2.167-14c-0.667-2.667-3-18.167-3.833-22.5c-0.833-4.334-6.666-19-7.666-21.834s4.166,0.5,5.666,2.833s7.5,5.5,10.5,5.333s5.667-1.667,6-5.333s-3.833-4.5-5.833-9.833C684.556,659.146,678.001,655.333,675.668,654.333z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-hand-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana86"
+                                            className="back-hand-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M75.833,638.5c-3.168,1.123-14.167,7-17.833,8.5s-5.833,6.5-10.167,9s-8.333,6-9,8.833s-5.5,4.333-5.5,7.333s2,5.333,6.879,6s12.621-8,14.121-9.5s2.5,0.5,1.833,2.333s-5.667,15-6.833,19.834c-1.167,4.833-3.833,17-4.5,21s-3,20.999-3.333,23.999s-3.333,15,1.167,18.334s7.833-2.334,9.833-7.667s1.5-11.833,2.667-14.5s4.333-19,6.333-22.5s2.833,1.166,1.667,4.166S59.333,729.833,59.333,732s-1.833,14-2.5,18s-1.333,14,0,18.167s7.167,1.666,9-0.5s3.667-11.167,4.5-16.5s1-14.167,2.531-20S76.5,714.834,78.333,712s3.833,0.334,3.333,2.5s-2.333,9.5-4,16.333s-1.5,14.5-3,21.334S71.5,764.5,74.667,768s6.5,0.833,8.5-1.667S87.5,753,88.833,744.5s4.667-21.166,5.833-25.166c1.167-4.001,3.5-7.834,5.333-7.5c1.833,0.333-0.167,6-1,9.166s-5,20.667-5.167,26.334s2.5,7.833,5.667,6.5s4.333-6,5-8.834s2.667-8.666,3.167-12s4.167-16.166,6.167-20.334c2-4.166,2.833-9.332,6.673-27.332C124.346,667.333,122,663,121,659C120.411,656.865,79.5,637.75,75.833,638.5z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-hand-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana87"
+                                            className="back-hamstring-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M375.167,740.334C376,746.168,375.25,750.5,374,769s3.25,73.25,6.5,86.75s7,38,8.75,56.25c1.093,11.397,3.356,23.087,5.571,32.39c8.43,9.247,24.089,12.271,39.666,11.319c15.283-0.934,32.867-4.996,46.759-24.891c0.889-5.953,1.705-9.622,2.004-10.818c0.75-3,10.75-28,13.5-41.25s4.25-43.083,5.25-58.083s-4.499-54.001-5.833-61.667s-3.833-29.666-5.166-35.833s-4.334-21.667-4.834-25.667c-0.218-1.739-1.254-7.511-2.452-14c0,23.5-5.601,24.729-14.134,38.43C450.045,753.294,412.941,780.237,375.167,740.334z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-hamstring-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana88"
+                                            className="back-hamstring-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M259.066,720.642c-7.993-12.078-15.316-18.142-15.316-37.142c-1.5,8.5-8.25,43-9.75,54s-3,14.5-7.25,46.75s-1.25,76,2.75,93.5S242.25,914,244.75,927c14.239,23.213,32.047,27.719,48.263,28.709c17.666,1.079,33.441-2.949,40.654-15.376c1.667-5.833,6-44.5,8.167-58s9.5-61.333,10.5-78.667s1-34.999,0.167-40.999s-1.625-16.292-1-21.667C317.235,774.904,279.76,751.914,259.066,720.642z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-hamstring-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana89"
+                                            className="back-knee-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M434.486,955.709c-15.577,0.951-31.235-2.072-39.666-11.319c1.332,5.594,2.646,10.325,3.679,13.61c2.75,8.75,2.25,34.25,5.5,40.5c2.566,4.935,3.723,9.253,3.484,15.155c6.028-4.677,22.368-6.785,36.539-8.198c13.658-1.361,29.354,1.297,35.854,14.047c-1.023-13.899-1.763-29.888-1.628-46.754c0.15-18.787,1.656-32.959,2.996-41.932C467.354,950.713,449.77,954.775,434.486,955.709z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-knee-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana90"
+                                            className="back-knee-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M293.013,955.709c-16.216-0.99-34.024-5.496-48.263-28.709c2.5,13,3.25,32.25,4.25,53.5c0.655,13.917-0.084,29.658-1.164,42.445c2.574-20.91,19.106-19.136,35.64-17.488c16.633,1.658,33.267,3.272,35.69,9.876c-1.167-5.5,0.667-11.167,3-16s3.167-17.833,4-28.833s5.833-24.334,7.5-30.167C326.455,952.76,310.679,956.788,293.013,955.709z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-knee-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana91"
+                                            className="back-calf-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M444.023,1005.457c-14.171,1.413-30.511,3.521-36.539,8.198c-0.064,1.573-0.221,3.253-0.484,5.095c-1.25,8.75-7,65.25-7.5,84.75s7.5,36,10.5,40s3.75,15.5,4,21.75c0.127,3.173,1.801,16.722,3.811,30.928c5.639,7.736,15.869,11.903,25.566,11.521c11.76-0.464,25.932-3.604,30.46-12.624c0.124-3.28,0.257-6.378,0.413-9.074c0.75-13,4.75-46.75,7.5-74s3-44.75,1-62.25c-0.92-8.055-2-18.392-2.872-30.246C473.377,1006.754,457.682,1004.096,444.023,1005.457z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-calf-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana92"
+                                            className="back-calf-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M283.476,1005.457c-16.533-1.647-33.065-3.422-35.64,17.488c-0.569,6.737-1.232,12.655-1.836,17.055c-1.75,12.75-5,46-2.5,60s8.75,70.5,9,91.75c2.411,11.598,18.52,15.432,31.624,15.948c13.165,0.52,23.325-2.338,25.624-16.146c1.52-12.183,2.896-25.104,3.086-31.552c0.333-11.333,8.333-24,12.833-37.334s0.5-46.666-1.167-65.5s-4.167-36.333-5.333-41.833C316.743,1008.729,300.109,1007.115,283.476,1005.457z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-calf-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana93"
+                                            className="back-ankle-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M443.377,1207.698c-9.697,0.383-19.927-3.784-25.566-11.521c1.949,13.775,4.213,28.17,5.69,34.323c3,12.5,1,17.833-1.833,26.667s-2.334,14.333-1.334,21.999s0.667,17.5,0.5,24.5c-0.097,4.075-2.111,11.312-2.63,18.029c5.397-8.651,37.767-2.677,48.526,9.038c0.54-0.488,1.031-0.948,1.458-1.357c0.771-4.053,1.114-8.488,0.792-12.721c-0.999-13.15-1.991-21.145,2.987-33.769c-0.096-0.073-0.193-0.146-0.301-0.221C469.5,1281.167,470,1270,470,1261s1.25-24.25,2.25-32c0.792-6.143,1.114-21.391,1.587-33.926C469.309,1204.095,455.137,1207.234,443.377,1207.698z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-ankle-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana94"
+                                            className="back-ankle-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M284.124,1207.698c-13.104-0.517-29.212-4.351-31.624-15.948c0.25,21.25,4.125,51.5,4.25,58.125s-1.25,26.75-1,28.625s0.25,3.75-0.875,3.75c6.082,14.415,4.342,25.212,3.644,34.406c-0.388,5.104,0.181,9.513,1.315,14.177c10.5-13.499,47.957-20.15,48.229-7.491c-0.177-6.154-1.244-13.505-2.062-20.509c-1.5-12.834,1.833-27.333,2.167-31.167s-4.5-18.5-5.833-25.5s2.167-19.166,4.167-31.333c0.862-5.245,2.096-14.051,3.247-23.281C307.448,1205.36,297.289,1208.218,284.124,1207.698z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-ankle-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana95"
+                                            className="back-sole-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M418.204,1321.696c-0.372,4.823,0.025,9.38,2.463,12.305c6.573,7.889,13.334,10.333,26.667,7.166c9.396-2.231,15.716-7.104,19.396-10.433C455.971,1319.02,423.602,1313.045,418.204,1321.696z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-sole-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana96"
+                                            className="back-sole-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M259.833,1330.833C262.167,1333,272.5,1340,283,1342.512s19.167-1.512,23-7.179c1.741-2.574,2.21-6.868,2.062-11.991C307.791,1310.683,270.333,1317.334,259.833,1330.833z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-sole-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana97"
+                                            className="back-foot-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M468.981,1316.656c0.321,4.232-0.021,8.668-0.792,12.721c0.792-0.758,1.396-1.358,1.812-1.71c2.167-1.834,16-5.666,21.5-7.5s7.333-7.166,7.666-10.166s0.5-2.667,1.834-5.834s-5.167-7.5-6-7.5s-2,0-2-1.5s-3.667-4.333-5.167-4.333s-3-1-3.5-2.5s-6.667-3.833-8.833-3.5c-2.058,0.316-1.715-0.571-3.533-1.946C466.991,1295.512,467.982,1303.506,468.981,1316.656z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-foot-rt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          <path
+                                            transform="translate(323)"
+                                            id="ana98"
+                                            className="back-foot-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M258.519,1316.656c0.699-9.194,2.438-19.991-3.644-34.406c-1.125,0-2.875,1.375-3.125,2.625s-2.375,0.625-4,0.125s-6.625,4.5-6.75,5.125s-0.25,1.25-2.25,1.125s-5.75,3.125-5.875,4.125s-1.208,1.792-2.875,1.958s-4.167,3-5.167,5.334s0.833,4.833,1.667,9.166s6.667,9.333,18.833,12.167s12.167,4.666,14.5,6.833C258.699,1326.169,258.13,1321.761,258.519,1316.656z"
+                                            cursor="pointer"
+                                            style={{
+                                              fill: bodyPartsArray?.includes(
+                                                "back-foot-lt"
+                                              )
+                                                ? "#ff00005c"
+                                                : "rgba(255, 0, 0, 0)",
+                                            }}
+                                          />
+                                          {/* <rect
+                              transform="translate(332,15)"
+                              className="goa"
+                              x="587.5"
+                              y="1023.5"
+                              fill="#72B8FC"
+                              stroke="#6a6a6a"
+                              vectorEffect="non-scaling-stroke"
+                              width={287}
+                              height={272}
+                            />
+                            <image
+                              xlinkHref={IMAGES.MODELA}
+                              x="71%"
+                              y="78%"
+                              height="200px"
+                              width="140px"
+                            />
+                            <g id="anaspotsb">
+                              <circle
+                                cx={319}
+                                cy={521}
+                                r={20}
+                                fill="#ff6600"
+                                stroke="#cc2900"
+                                strokeWidth={1}
+                                id="anaspotsb_0"
+                                cursor="pointer"
+                                display="none"
+                              />
+                              <circle
+                                cx={939}
+                                cy={413}
+                                r={15}
+                                fill="rgba(255, 0, 0, 0.3)"
+                                stroke="#FF0000"
+                                strokeWidth={1}
+                                id="anaspotsb_1"
+                                cursor="pointer"
+                                display="none"
+                              />
+                            </g> */}
+                                        </svg>
+                                      </div>
+                                    </>
+                                  )}
+
+                                  {/* basea*/}
+
+                                  {/* baseb*/}
+                                </div>
+                                <div className="clear" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <h2>Reason</h2>
+                      {avatarBodyparts?.getAllAvatarCoordinate?.avatarReason ||
+                        "N/A"}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="card-body card-body-height-for-avatar">
+                      <div className="row">
+                        <div className="col-md-12">
+                          <span
+                            className="me-2 mb-3 span-class-style cursor"
+                            onClick={() => setswitchFemaleAvatar("Front")}
+                          >
+                            {" "}
+                            Front
+                          </span>
+                          <span
+                            className="mr-1 mb-3 span-class-style cursor"
+                            onClick={() => setswitchFemaleAvatar("Back")}
+                          >
+                            {" "}
+                            Back
+                          </span>
+                          <div className="row">
+                            <div className="col-md-4 col-lg-4 col-12">
+                              <p className="txt" />
+                              <h6 class="text-uppercase mt-4">
+                                Selected Body Parts
+                              </h6>
+                              {/* <p class="txt">{avatarData.toString()}</p> */}
+                              <div className="avatar-body-part-fixed-height">
+                                {bodyPartsArray.map((string, index) => (
+                                  <ul key={index}>
+                                    <li>{string}</li>
+                                  </ul>
+                                  // <p key={index}>{string}</p>
+                                ))}
+                              </div>
+                            </div>
+                            <div className="col-md-8 col-lg-8 col-12">
+                              <div className="form-group center">
+                                <span id="anatip" />
+                                <div id="anawrapper">
+                                  {switchFemaleAvatar === "Front" ? (
+                                    <>
+                                      <div id="basea">
+                                        <svg
+                                          version="1.1"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          onClick={(e) => {
+                                             avatarValues(e.target);
+                                          }}
+                                          width="1390px"
+                                          height="1370px"
+                                          viewBox="0 0 1390 1370"
+                                          xmlSpace="preserve"
+                                        >
+                                          <image
+                                            overflow="visible"
+                                            width={1390}
+                                            height={1370}
+                                            xlinkHref={IMAGES.MODELAFE}
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana35"
+                                            className="front-head"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1082.16,60.833c-25.906,0-43.826,13.667-50.414,35.475c-3.213,10.641-3.598,24.057-3.598,40.511c0,2.183,0.06,4.363,0.16,6.536c0.521,11.222,2.31,22.173,4.608,31.583c3.209,13.141,7.401,23.275,10.495,26.914c3.472,5.323,9.371,9.767,13.83,13.25c7.537,5.888,14.671,9.029,26.037,9.029c11.718,0,20.105-3.845,27.271-10.22c3.897-3.467,8.842-8.387,10.528-12.226c3.354-6.575,6.155-17.269,8.301-28.019c2.513-12.598,4.122-25.259,4.662-31.473c0.134-1.537,0.204-2.694,0.204-3.341C1134.245,123.727,1142.167,60.833,1082.16,60.833z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-head"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana36"
+                                            className="front-eye-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1070.873,130.935c0-4.836-5.481-8.756-13.478-8.756c-7.995,0-14.477,3.92-14.477,8.756c0,4.836,6.481,8.756,14.477,8.756C1065.392,139.691,1070.873,135.771,1070.873,130.935z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-eye-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana37"
+                                            className="front-eye-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1106.229,139.691c7.995,0,14.477-3.92,14.477-8.756c0-4.836-6.481-8.756-14.477-8.756c-7.996,0-13.478,3.92-13.478,8.756C1092.751,135.771,1098.232,139.691,1106.229,139.691z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-eye-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana38"
+                                            className="front-ear-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1021.25,139.125c-2.875,0.625-4.125,8.25-3.125,13.625s3.909,14.25,6.455,18.75c2.336,4.131,4.846,9.557,8.337,3.438c-2.299-9.411-4.087-20.362-4.608-31.583C1025.986,141.067,1023.102,138.723,1021.25,139.125z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-ear-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana39"
+                                            className="front-ear-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1136,174.625c1.5-2.375,4.375-8.875,5.75-12.625s2.875-14.25,2.375-18.875s-4.75-4.875-6.5-2.25c-0.807,1.209-2.197,1.536-3.584,1.318c-0.54,6.214-2.149,18.875-4.662,31.473C1131.777,178.979,1134.818,176.495,1136,174.625z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-ear-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana40"
+                                            className="front-nose"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1068.035,158.752c-0.408,4.419,5.838,7.005,9.574,6.071c4.67,2.452,6.304,0.583,9.223-0.584c5.371,0.817,7.473-3.036,7.473-7.238c0-4.203-4.087-6.305-4.554-11.442s-3.152-7.122-2.919-12.609s-2.218-9.223-5.684-9.223c-4.866,0-5.874,7.355-5.524,9.924c0.351,2.568-1.984,9.924-2.335,12.843S1068.619,152.448,1068.035,158.752z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-nose"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana41"
+                                            className="front-mouth"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1090.479,174.547c-2.009-2.389-5.549-1.449-7.013-0.658c-0.785,0.424-3.116,0.768-4.563-0.329s-5.454-0.109-6.567,1.426c-1.113,1.536-10.464,5.497-11.242,8.128c-0.778,2.632,7.681,3.851,9.795,4.619c2.115,0.768,4.008,3.29,11.688,3.29c7.682,0,9.765-2.445,11.799-2.851c2.035-0.406,7.235-1.987,7.569-4.071C1102.278,182.018,1093.708,178.386,1090.479,174.547z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-mouth"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana42"
+                                            className="front-neck"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1055.245,277.186c7.666-1.333,14,3.667,18.333,7.667s11.666,4,15.333,0s12.001-9.333,24.334-7.333s16.333-1,26.333-6c13.203-6.602,19.454-9.105,36.681-14.544c-4.235-0.279-8.442-0.39-12.514-0.622c-17.5-1-38.957-4.63-42.5-13.333c-4.079-10.019-3.245-27.352-0.167-41.333c-1.687,3.839-6.631,8.759-10.528,12.226c-7.165,6.375-15.553,10.22-27.271,10.22c-11.366,0-18.5-3.142-26.037-9.029c-4.459-3.483-10.358-7.927-13.83-13.25c0.333,2.167,2.75,18.772,1.833,32.25c-0.911,13.398-10.762,16.644-31.612,20.584c-8.076,1.526-21.371,2.995-29.388,3.666c20.666,3.5,43.333,10.5,47.333,13.5S1047.579,278.519,1055.245,277.186z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-neck"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana43"
+                                            className="front-chest"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1183.389,362.851c-1.799-4.795-3.164-9.618-2.81-16c0.434-7.804,1.971-18.29,1.593-28.995c-0.712-20.142-8.204-41.059-42.594-46.337c-10,5-14,8-26.333,6s-20.667,3.333-24.334,7.333s-11,4-15.333,0s-10.667-9-18.333-7.667s-19.667-2.333-23.667-5.333c-32.877,3.202-47.718,24.43-48.082,49.281c-0.053,3.622,0.198,7.319,0.749,11.05c1.906,12.904-0.123,23.486-2.841,33.069c-3.46,12.201-7.175,14.914-7.034,34.474c1.25,8,5.125,16.75,8.875,21.25c0.494,4.944,3.648,20.29,5.687,28.839c0.539,2.259,1,4.043,1.313,5.036c0.467,1.478,1.176,8.086,1.885,16.806c2.263,3.992,7.449,32.313,48.83,14.238c12.048-5.262,24.116-13.146,41.201-13.146s30.371,8.46,41.064,13.26c40.021,17.962,46.986-6.785,50.044-16.517c0.871-10.137,1.665-17.716,1.976-18.765c1-3.375,5.166-24.208,5.833-30.042c3.333-4,7.917-15,8.333-19.417C1191.936,381.241,1186.857,372.096,1183.389,362.851z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-chest"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana44"
+                                            className="front-breasts"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1183.389,362.851c-16.477-44.995-66.144-13.999-101.228-13.999s-84.915-32.333-100.757,16.401c-3.46,12.201-7.175,14.914-7.034,34.474c1.25,8,5.125,16.75,8.875,21.25c23,29.375,52.834,11.539,67-1c8.393-7.428,20.5-14.811,31.916-14.811c9.584,0,18.084,4.821,27.584,12.811c22,18.503,54,26.625,71.333,2.708c3.333-4,7.917-15,8.333-19.417C1191.936,381.241,1186.857,372.096,1183.389,362.851z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-breasts"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana45"
+                                            className="front-abdomen"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1123.226,486.009c-10.693-4.799-23.979-13.26-41.064-13.26s-29.153,7.884-41.201,13.146c-41.381,18.075-46.567-10.247-48.83-14.238c1.571,19.306,3.148,48.961,2.115,56.194c-1.135,7.941-9.276,28.04-14.799,41.473c3.636,7.516,25.04,39.648,101.913,39.648s99.986-31.362,104.039-39.648c-2.226-5.323-4.486-11.973-5.403-14.723c-1.25-3.75-6.75-17-9.25-23.25c-1.723-4.308,0.592-39.376,2.524-61.86C1170.212,479.224,1163.246,503.971,1123.226,486.009z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-abdomen"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana46"
+                                            className="front-pelvis"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1081.359,608.973c-76.873,0-98.277-32.132-101.913-39.648c-1.779,4.327-3.287,7.963-4.201,10.277c-0.718,1.819-4.753,12.178-9.266,28.098c20.901,5.683,66.603,53.919,86.013,79.231c15.253-7.08,41.929-7.298,60.341-0.689c16.61-24.865,56.122-72.163,85.544-78.591c-4.775-18.663-9.193-31.593-10.132-33.299c-0.733-1.333-1.538-3.092-2.347-5.027C1181.346,577.611,1158.232,608.973,1081.359,608.973z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-pelvis"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana47"
+                                            className="front-pubis"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1051.992,686.932c5.745,7.492,9.585,12.977,10.419,14.754c15.333,17.168,28.667,12.5,40.834-0.833c0.847-1.714,4.106-7.153,9.088-14.61C1093.921,679.633,1067.245,679.852,1051.992,686.932z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-pubis"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana48"
+                                            className="front-shoulder-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M983.496,321.133c0.364-24.852,15.205-46.08,48.082-49.281c-4-3-26.667-10-47.333-13.5c-8.017,0.671-36.833-0.833-45.5,44.5c-1.326,6.936-6.612,29.151-8.44,49.644C938.758,339.442,975.279,337.249,983.496,321.133z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-shoulder-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana49"
+                                            className="front-shoulder-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1182.172,317.855c5.073,20.997,49.579,18.889,52.073,36.997c0-5.5-5-59.75-19-79.25c-10.742-14.963-25.018-17.708-38.986-18.628c-17.227,5.439-23.478,7.943-36.681,14.544C1173.968,276.797,1181.46,297.713,1182.172,317.855z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-shoulder-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana50"
+                                            className="front-arm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M981.404,365.253c2.718-9.583,4.747-20.165,2.841-33.069c-0.551-3.731-0.802-7.429-0.749-11.05c-8.217,16.115-44.738,18.309-53.191,31.362c-0.269,3.007-0.464,5.978-0.56,8.856c-0.697,20.911-17.797,65.556-22.819,82.598c1.973,21.535,38.649,20.571,48.624,11.675c0.842-2.145,1.608-3.973,2.195-5.273c2.333-5.167,15.667-39.667,16.625-50.625C974.229,380.167,977.944,377.454,981.404,365.253z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-arm-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana51"
+                                            className="front-arm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1257.359,443.382c-0.202-0.769-0.41-1.559-0.634-2.391c-2.22-8.277-5.535-19.675-10.48-34.389c-3.74-11.128-6.349-20.293-8.152-27.713c-1.16-4.771-1.988-8.82-2.571-12.207c-0.995-5.78-1.276-9.627-1.276-11.83c-2.494-18.108-47-16-52.073-36.997c0.378,10.705-1.159,21.191-1.593,28.995c-0.354,6.382,1.011,11.205,2.81,16c3.469,9.245,8.547,18.391,6.022,38.418c0.333,1.917,1.834,4.083,2.667,6.917s7.334,22.667,10.334,30.833c1.362,3.708,3.618,8.688,5.8,13.723C1213.072,465.191,1264.631,474.896,1257.359,443.382z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-arm-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana52"
+                                            className="front-elbow-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M906.926,443.95c-0.382,1.295-0.701,2.449-0.931,3.402c-3.25,13.5-5.75,23.5-9.5,29.75c-1.344,2.239-4.423,8.375-7.957,16.714c8.213-9.979,21.624-12.289,31.761-7.812c10.473,4.626,18.204,17.605,19.489,33.772c0.413-1.687,0.739-3.183,0.957-4.425c1.667-9.5,6.5-29,8-37.667c1.123-6.486,4.299-15.679,6.805-22.061C945.575,464.521,908.898,465.484,906.926,443.95z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-elbow-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana53"
+                                            className="front-elbow-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1244.594,486.005c11.671-5.155,25.484-5.065,32.105,9.867c-1.364-3.261-2.682-6.233-3.891-8.824c-1.132-2.424-2.169-4.515-3.063-6.196c-6.25-11.75-8-20-9-23.75c-0.469-1.759-1.437-6.279-3.386-13.72c7.271,31.514-44.287,21.81-49.147,9.359c2.623,6.052,5.139,12.183,5.866,16.277c0.87,4.895,2.834,15.833,4.5,21.333c0.842,2.78,2.11,9.819,3.504,17.005c1.362,7.03,2.845,14.2,4.163,17.662C1221.555,504.252,1231.784,491.663,1244.594,486.005z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-elbow-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana54"
+                                            className="front-forearm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M920.299,486.005c-10.137-4.478-23.548-2.167-31.761,7.812c-6.328,14.935-14.118,36.964-16.043,56.536c-4.38,44.525-10.921,61.208-15.92,74.535c1.766,4.367,7.198,6.687,12.375,8.934c5.517,2.395,14.79,4.127,20.007,3.178c2.049-4.53,4.271-9.329,6.538-13.397c8.5-15.25,21.75-43.417,28.75-59.083c6.085-13.618,12.796-33.527,15.543-44.742C938.503,503.61,930.771,490.631,920.299,486.005z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-forearm-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana55"
+                                            className="front-forearm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1295.942,633.821c5.138-2.229,10.528-4.53,12.336-8.833c-0.175-0.452-0.352-0.911-0.533-1.386c-6.5-17-11.5-47.25-15-73.25c-2.464-18.305-9.761-39.461-16.046-54.48c-6.621-14.932-20.435-15.022-32.105-9.867c-12.81,5.658-23.039,18.248-18.349,39.014c2.667,7,11,35,20,52c7.483,14.136,23.78,47.339,29.779,59.996C1281.258,637.928,1290.457,636.202,1295.942,633.821z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-forearm-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana56"
+                                            className="front-wrist-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M868.95,633.821c-5.177-2.247-10.609-4.566-12.375-8.934c-0.684,1.821-1.339,3.582-1.955,5.34c-2.742,7.825-5.627,12.177-8.157,14.688c6.81-0.805,13.795,1.275,19.601,4.923c6.229,3.915,11.636,4.602,13.336,9.767c1.026-3.539,3.603-9.493,6.953-16.841c0.824-1.808,1.699-3.763,2.604-5.765C883.74,637.948,874.467,636.215,868.95,633.821z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-wrist-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana57"
+                                            className="front-wrist-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1298.829,649.838c7.824-4.917,17.79-6.998,26.583-2.986c-9.072-4.698-11.06-6.172-17.134-21.864c-1.808,4.303-7.198,6.604-12.336,8.833c-5.485,2.381-14.685,4.107-19.918,3.194c1.216,2.565,2.01,4.29,2.221,4.837c1.25,3.25,5.625,12.75,5.75,15.5c0.057,1.237,0.467,4.698,1.117,9.02C1283.745,654.54,1290.563,655.033,1298.829,649.838z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-wrist-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana58"
+                                            className="front-hand-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M866.063,649.838c-5.806-3.648-12.791-5.729-19.601-4.923c-2.199,2.181-4.131,2.973-5.468,3.438c-2.875,1-20.625,11.625-26.375,15.25s-8.625,9.375-14.25,12.125s-8.5,6.875-10,8.625c-1.5,1.75-6.625,7.5-6.625,9.875s4.375,3.75,8,2.875s11.75-8.625,15.75-12.375c4-3.75,9.5-4.875,12.25-4.875s2.625,3.125,1.875,4.5s-2.875,8.25-4,13.625s-1,11.874-1.875,13.999s-5,19.375-5.625,23.625s-2.625,15.5,0,19s6,1.25,7.125-1.375s3.625-14.125,4.086-16.875s6.789-21.125,7.414-22.75s3.125,2.625,2.25,5.75s-2.375,11.75-4.75,18.5s-2.625,14.125-3.375,17.5s-1.75,8.125-1.5,11.5s3.125,5.875,5.5,4.625s4.875-9.5,5.5-12.5s4-14.375,5.625-18.375s3-20.5,4-23s1.875,1.125,1.25,2.75s-3.375,18-3.75,21.625s-3.5,14.875-2.625,19.125s5.125,3.5,6.75,1.75s2.5-7.125,3-9.75s4.125-13.375,5.427-17.5s3.448-16.25,4.073-20.25s2-1.625,1.125,1.75s-0.875,11.875-1.75,14.25s-1,8.125-1.75,9.625s-2.75,5.875-1,9s5,1.5,5.875,0.125s3.75-10.625,5-13.375s2.625-11,3.75-15.875s3.208-11,4.375-17.499c1.167-6.5,1.333-14,2.5-18.334c1.167-4.333,4.5-18.666,4.667-23c0.022-0.589,0.196-1.409,0.487-2.413C877.699,654.44,872.293,653.753,866.063,649.838z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-hand-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana59"
+                                            className="front-hand-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1369.578,677.019c-3.334-5.167-13.666-10-17-13.5s-17.833-11.833-27.166-16.667c-8.793-4.012-18.759-1.931-26.583,2.986c-8.266,5.195-15.084,4.702-13.717,16.534c0.795,5.289,1.951,11.865,3.258,17.23c2.375,9.75,2.125,16.25,3.5,22.375c1.375,6.124,4.875,14.499,5.75,21.249s3.375,7.25,5.5,15.25s6.875,8.375,8.125,6.125s0.375-7.5-0.375-8.5s-1.5-3.125-1.875-5.25s-1.625-8.375-2.125-11.5s-3.125-13.125-2.25-14.5s3.5,4,3.75,5.875s3,14.875,5,21.25s4,18.5,7.125,22.875s7.125,1.125,7.125-2.875s-3-17.125-3.25-20s-3.875-20-4.375-21.625s2.5-1.125,2.75,0.25s1.75,10.625,3,14.375s5,18.125,5.5,20.75s2,14.125,6.125,16.25s5.875-2.125,6.25-5.875s-5.5-30-6.375-34.5s-4.375-16.875-3-18.125c1.375-1.249,4.875,11.75,5.5,15.75s4.375,22.875,5.875,26.625s5.75,4.75,7.5,1.5s-1.5-24.375-1.875-31.375s-4.375-14.249-4.5-21.249s-5.25-20.5-4.834-22.708c0.499-2.646,9.167,0.333,12.167,2.667c3,2.333,8.5,8.5,11.5,10s8.833,3.834,10.167,0C1377.079,684.852,1372.912,682.186,1369.578,677.019z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-hand-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana60"
+                                            className="front-thigh-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M965.979,607.7c-8.939,31.535-19.757,84.918-10.4,137.151c1.925,10.749,29.666,157,32.416,171.75c0.446,2.395,1.164,5.843,2.017,10.031c54.813-4.183,72.883,49.144,80.68,10.055c-0.333-28.322-1.68-73.09-2.696-91.586c-0.494-9-1.657-28.941,3.583-60.582c2.38-14.367,13.417-54.918-9.167-82.834c-0.834-1.777-4.674-7.262-10.419-14.754C1032.582,661.62,986.881,613.383,965.979,607.7z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-thigh-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana61"
+                                            className="front-thigh-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1112.333,686.242c-4.981,7.457-8.241,12.896-9.088,14.61c-22,24.165-15.5,60.249-10.5,83.749s4,49.25,3.75,59.5c-0.192,7.873-2.694,56.297-3.015,88.533c7.488,47.217,22.265-11.783,80.561-5.816c0.635-3.859,1.253-7.717,1.87-11.301c1.666-9.666,18.001-92.666,21.001-108.666s14.579-62.191,14.583-105.25c0.003-32.74-7.137-68.624-13.618-93.95C1168.455,614.08,1128.943,661.377,1112.333,686.242z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-thigh-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana62"
+                                            className="front-knee-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M990.012,926.633c3.118,15.324,8.045,40.617,8.183,61.056c9.946,48.058,48.957,36.435,64.312,13.894c0.233-1.731,0.557-3.249,0.989-4.48c3.25-9.25,7-21.25,7.25-44c0.047-4.254,0.023-9.899-0.054-16.414C1062.895,975.776,1044.825,922.45,990.012,926.633z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-knee-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana63"
+                                            className="front-knee-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1093.48,932.635c-0.097,9.738,0.006,17.998,0.431,23.219c1.833,22.5,4.167,31.666,7.667,44.5c15.167,23.998,59.667,38.498,64.917-16.002c0-11.75,2.083-30.834,4.083-39.166c1.259-5.246,2.386-11.811,3.463-18.367C1115.745,920.852,1100.969,979.852,1093.48,932.635z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-knee-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana64"
+                                            className="front-leg-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M998.194,987.688c0.057,8.378-0.69,15.94-2.699,21.663c-9.481,27.008-3.25,94.75,0,112s21.25,99.75,24.084,121.502c0.292,2.238,0.427,4.588,0.472,6.978c7.032-6.858,20.667-9.863,28.878-8.069c4.987,1.089,8.274,3.628,11.095,7.459c-2.394-9.663-1.716-19.744-1.028-34.869c0.75-16.5,6.75-83.5,9.75-105.25s0.75-46.25-2.5-62c-2.817-13.653-5.256-34.25-3.739-45.52C1047.151,1024.123,1008.141,1035.746,998.194,987.688z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-leg-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana65"
+                                            className="front-leg-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1101.578,1000.354c3.5,12.832-5.166,55.332-7,75.166c-1.834,19.832,5,54.5,5.167,66.334c0.167,11.832,3.166,42.5,4.833,56.832c1.667,14.334,2.333,41.168-0.667,53.5c3.302-5.502,5.874-9.074,12.053-10.424c8.796-1.922,21.821,0.66,28.281,8.59c0.5-9.5,5.25-38.25,14.75-79.25s12.75-69.75,14.5-100.5s-0.5-49.75-2.25-55s-4.75-19.5-4.75-31.25C1161.245,1038.852,1116.745,1024.352,1101.578,1000.354z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-leg-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana66"
+                                            className="front-ankle-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1048.929,1241.762c-8.211-1.794-21.846,1.211-28.878,8.069c0.206,10.988-1.585,22.862,0.195,29.022c1.613,5.583,2.301,5.904,1.311,9.828c7.506-4.416,35.265-5.709,42.285,2.941c-0.564-3.49-1.649-7.012-2.347-9.521c-1.25-4.5,0.25-8.75,1.75-11.25s0.75-8.5-2.5-19c-0.271-0.875-0.505-1.752-0.722-2.631C1057.203,1245.39,1053.916,1242.851,1048.929,1241.762z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-ankle-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana67"
+                                            className="front-ankle-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1115.964,1241.762c-6.179,1.35-8.751,4.922-12.053,10.424c-3,12.334-3.166,15.168-1.166,22.334c2,7.168,0,8.5-1.833,18c4.667-11.668,38.198-9.256,42-3.5c-1.666-4.334,0.5-5.5,1.833-12.5s-1-16.668-0.5-26.168C1137.785,1242.422,1124.76,1239.84,1115.964,1241.762z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-ankle-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana68"
+                                            className="front-foot-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1021.557,1288.682c-0.34,1.347-0.877,3.116-1.644,5.672c-3,10-9.334,16.832-12.5,22c-3.166,5.166-0.5,7.832,2.833,9.666c3.333,1.832,3.333-0.5,4.833,0.666c1.5,1.168,12.334,0.5,13.5,0.168c1.166-0.334,1.5-0.668,5.167,0.832s8.833-2.332,10.667-0.666s10,1.666,12.666,1.404s5.334-5.238,5.834-6.738s0.333-3,1-5s1.166-6.166-0.167-9c-1.333-2.832-1.5-3.332,0-8.332c0.663-2.211,0.543-4.961,0.096-7.73C1056.821,1282.973,1029.063,1284.266,1021.557,1288.682z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-foot-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana69"
+                                            className="front-foot-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1100.912,1292.52c-1.833,9.5,2.666,9.834,0.333,14.166c-2.333,4.334-1.333,10.5-0.167,11.5s-1.333,2.5,3,7.168c4.333,4.666,13.834,2.666,15.334,2.166s3-1,4,0.201c1,1.203,6.5,0.633,7.666,0c1.166-0.631,3.334-1.201,4-0.318s5.167-0.383,7.5-0.049s5.834-1.168,8.167-0.834c2.333,0.332,7.167-2,7-6.5s-2.833-6.166-4.833-9.166s-8.334-17.5-10-21.834C1139.11,1283.264,1105.579,1280.852,1100.912,1292.52z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "front-foot-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          {/* <rect
+                                transform="translate(332,15)"
+                                className="gob"
+                                x="587.5"
+                                y="1023.5"
+                                fill="#72B8FC"
+                                stroke="#6a6a6a"
+                                vectorEffect="non-scaling-stroke"
+                                width={287}
+                                height={272}
+                              />
+                              <image
+                                xlinkHref={IMAGES.MODELBFE}
+                                x="71%"
+                                y="78%"
+                                height="200px"
+                                width="140px"
+                              />
+                              <g id="anaspotsa">
+                                <circle
+                                  cx={441}
+                                  cy={797}
+                                  r={25}
+                                  fill="#ff6600"
+                                  stroke="#cc2900"
+                                  strokeWidth={1}
+                                  id="anaspotsa_0"
+                                  cursor="pointer"
+                                  display="none"
+                                />
+                                <circle
+                                  cx={1032}
+                                  cy={1085}
+                                  r={20}
+                                  fill="rgba(255, 0, 0, 0.3)"
+                                  stroke="#FF0000"
+                                  strokeWidth={1}
+                                  id="anaspotsa_1"
+                                  cursor="pointer"
+                                  display="none"
+                                />
+                              </g> */}
+                                        </svg>
+                                      </div>
+                                      {/* basea*/}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <div id="baseb">
+                                        <svg
+                                          version="1.1"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          onClick={(e) => {
+                                            
+                                               avatarValues(e.target);
+                                            // : avatarValues(e.target);
+                                          }}
+                                          // onClick={(e) => avatarValues(e.target)}
+                                          width="1390px"
+                                          height="1370px"
+                                          viewBox="0 0 1390 1370"
+                                          xmlSpace="preserve"
+                                        >
+                                          <image
+                                            overflow="visible"
+                                            width={1390}
+                                            height={1370}
+                                            xlinkHref={IMAGES.MODELBFE}
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana99"
+                                            className="back-head"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1126.355,199.416c0.778-1.884,1.421-3.543,1.734-4.601c8.91-30.064,10.593-68.02,7.453-84.763c-7.043-37.551-26.043-49.365-55.076-49.365c-24.545,0-45.633,15.813-51.082,50.793c-0.606,3.894-0.719,18.188-0.385,24.688s5.166,38.333,6.5,51.167c0.402,3.875,1.295,7.531,2.367,10.833C1052.742,213.064,1109.674,213.289,1126.355,199.416z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-head"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana100"
+                                            className="back-neck"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1159.289,256.58c-24.708-4.058-43.898-6.108-38.521-44.124c0.075-0.529,3.383-7.698,5.588-13.041c-16.682,13.874-73.613,13.649-88.488-1.249c2.479,7.635,5.935,13.355,6.633,15.333c1,2.833,1.101,23.757-0.833,27.333c-4.764,8.81-20.45,14.072-36.136,16.958C1032.887,261.835,1137.844,261.564,1159.289,256.58z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-neck"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana101"
+                                            className="back-back"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1187.059,352.366c1.042-6.596,4.563-15.113,6.822-24.408c1.684-6.926,2.669-14.283,1.402-21.604c-1.211-6.999-8.583-33.088-27.918-48.359c-2.739-0.525-5.439-0.982-8.076-1.415c-21.445,4.984-126.402,5.255-151.758,1.211c-2.954,0.543-5.905,1-8.786,1.383c-20.906,14.732-28.538,41.156-28.639,52.963c-0.052,6.076,0.717,11.467,1.741,16.199c1.65,7.623,3.969,13.524,4.623,17.745c0.935,6.021,4.099,12.505,3.347,30.31c0.695-0.762,1.361-0.074,1.599,1.775c0.334,2.583,0.414,8.646,0.584,14.167c0.834,27.167,8.25,62.417,10.5,74.417c0.864,4.607,2.134,12.61,3.412,21.707c12.51,3.593,36.984,6.452,64.054,7.054c8.353,0.186,16.95-1.671,25.52-1.713c8.629-0.042,17.228,1.729,25.513,1.458c24.939-0.817,47.03-3.692,58.604-7.104c0.909-7.375,1.759-13.759,2.148-15.152c1.348-4.822,7.622-41.454,8.5-45.25c2.354-10.18,2.502-27.106,3.25-30c0.749-2.893,0.702-21.669,1.75-21.75c0.085-0.006,0.299,0.349,0.618,0.999C1185.572,369.208,1185.675,361.114,1187.059,352.366z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-back"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana102"
+                                            className="back-loin"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1085.485,493.798c-8.569,0.042-17.167,1.899-25.52,1.713c-27.069-0.602-51.544-3.461-64.054-7.054c2.051,14.595,4.126,32.012,4.588,42.793c0.75,17.5-3,26-8.75,39.25c-2.334,5.377-6.521,15.532-11.106,27.505c12.579-6.673,39.644-11.567,58.938-11.567c26.518,0,27.865,9.913,46.273,9.913c17.061,0,23.347-9.685,46.269-9.805c19.26-0.1,44.073,7.603,54.368,15.691c-3.005-8.806-5.877-17.667-8.825-23.904c-4.333-9.167-11.751-27.5-12.667-31.583c-1.039-4.633,0.9-27.839,1.5-32.5c0.354-2.753,1.789-15.457,3.102-26.098c-11.573,3.412-33.664,6.287-58.604,7.104C1102.713,495.527,1094.114,493.755,1085.485,493.798z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-loin"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana103"
+                                            className="back-buttocks"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1085.855,596.351c-18.408,0-19.756-9.913-46.273-9.913c-19.295,0-46.359,4.895-58.938,11.567c-6.713,17.528-14.281,38.953-18.144,54.995c-5.731,23.808-6.991,46.636-7.209,63.701c29.158,39.25,78.172,59.463,116.954,24c0.208-1.105,0.721-1.672,1.672-2.2c1.5-0.834,5.25-6.916,6.25-8.75s-0.5-4.25,2.667-4.25c3.166,0,2.166,2.167,3.083,4.417s5.25,6.833,6.75,9.25c0.244,0.394,0.419,0.7,0.55,0.957c38.418,35.821,87.089,16.505,116.521-22.031c-0.555-18.68-3.029-36.468-5.238-50.094c-3-18.5-9-41.667-13.666-53.667c-1.491-3.835-2.932-7.959-4.342-12.096c-10.295-8.089-35.108-15.792-54.368-15.691C1109.202,586.666,1102.916,596.351,1085.855,596.351z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-buttocks"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana104"
+                                            className="back-shoulder-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1195.283,306.354c1.267,7.32,0.281,14.678-1.402,21.604c15.378,16.313,36.147,29.67,48.012,42.064c-2.872-15.51-2.674-29.3-12.393-66.522c-9.696-37.136-34.926-40.146-61.182-45.321c-0.318-0.063-0.636-0.124-0.953-0.184C1186.7,273.266,1194.072,299.356,1195.283,306.354z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-shoulder-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana105"
+                                            className="back-shoulder-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M971.848,328.337c-1.024-4.732-1.793-10.124-1.741-16.199c0.101-11.807,7.732-38.231,28.639-52.963c-3.145,0.418-6.204,0.747-9.079,0.993c-19.5,1.667-29.999,7.167-40.666,17.667s-12.833,29-16.5,42.167s-6.166,32.833-8.666,47.667c-0.186,1.098-0.394,2.236-0.618,3.4C934.8,358.473,956.07,344.937,971.848,328.337z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-shoulder-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana106"
+                                            className="back-arm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1251.415,486.132c8.355-3.299,16.792-6.843,19.493-19.357c-2.969-9.552-5.826-22.777-10.408-36.525c-2.616-7.848-10.031-27.096-16.289-50.052c-0.987-3.621-1.719-6.936-2.318-10.176c-11.864-12.394-32.634-25.751-48.012-42.064c-2.26,9.295-5.78,17.813-6.822,24.408c-1.384,8.748-1.486,16.841-1.19,24.633c3.607,7.351,20.851,53.064,21.882,55.501c1.122,2.652,13.73,35.901,15.75,40c0.62,1.258,1.399,3.698,2.203,6.554C1232.26,487.68,1241.016,490.238,1251.415,486.132z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-arm-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana107"
+                                            className="back-arm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M976.471,346.082c-0.654-4.221-2.973-10.122-4.623-17.745c-15.777,16.6-37.048,30.136-48.632,42.729c-2.809,14.561-8.512,33.735-12.216,43.767c-4,10.833-11.333,33.333-15.333,47.333c-0.271,0.947-0.549,1.88-0.832,2.804c2.254,13.99,11.088,17.709,19.832,21.162c9.813,3.874,18.164,1.82,24.583-5.67c2.101-7.862,12.472-30.725,17.084-43.129c4.833-13,21.75-56.583,22.666-59.333c0.261-0.782,0.541-1.306,0.817-1.608C980.569,358.587,977.405,352.102,976.471,346.082z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-arm-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana108"
+                                            className="back-elbow-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1260.719,517.093c17.666-5.388,26.376-3.416,31.051,0.222c-3.516-10.316-7.056-17.938-8.02-19.564c-1.571-2.652-5.5-13.5-10-23.25c-0.994-2.155-1.924-4.77-2.842-7.725c-2.701,12.514-11.138,16.058-19.493,19.357c-10.399,4.106-19.155,1.547-25.712-7.079c1.814,6.445,3.757,15.015,4.297,16.946c1.396,4.992,3.128,13.187,4.25,18.25c0.746,3.363,1.607,9.433,4.883,20.598C1241.495,525.172,1254.375,519.027,1260.719,517.093z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-elbow-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana109"
+                                            className="back-elbow-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M914.667,486.132c-8.744-3.453-17.578-7.172-19.832-21.162c-3.906,12.737-8.939,23.293-12.669,31.529c-2.147,4.742-5.686,12.941-8.969,21.789c4.363-4.216,12.979-7.047,32.166-1.196c6.256,1.908,18.88,7.908,21.492,17.354c2.269-8.253,4.666-21.363,6.145-25.947c1.666-5.167,4.666-20.333,6-27c0.062-0.306,0.149-0.66,0.25-1.038C932.831,487.953,924.479,490.006,914.667,486.132z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-elbow-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana110"
+                                            className="back-forearm-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1313.271,621.668c-6.903-23.146-12.489-67.07-15.521-82.418c-1.548-7.837-3.76-15.422-5.98-21.936c-4.675-3.638-13.385-5.609-31.051-0.222c-6.344,1.934-19.224,8.08-21.586,17.755c1.655,5.645,3.927,12.588,7.117,21.152c9.197,24.688,23.002,50.249,35.914,77.07c0.09,0.187,0.26,0.683,0.494,1.392c5.866-0.635,13.676-2.687,18.501-4.877C1307.249,626.819,1311.627,624.546,1313.271,621.668z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-forearm-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana111"
+                                            className="back-forearm-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M905.363,517.093c-19.187-5.851-27.803-3.021-32.166,1.196c-2.832,7.635-5.474,15.751-6.863,22.545c-3,14.667-3.834,31.167-6.167,46.5c-1.317,8.659-4.655,21.355-8.076,31.76c0.04,4.226,5.042,6.953,12.832,10.491c4.603,2.09,11.921,4.052,17.679,4.78c5.512-11.326,14.676-28.423,20.898-41.531c7.833-16.5,20-47.833,22.5-55.5c0.281-0.864,0.567-1.838,0.855-2.886C924.243,525,911.619,519,905.363,517.093z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-forearm-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana112"
+                                            className="back-wrist-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1315.5,628.25c-0.757-1.922-1.5-4.138-2.229-6.582c-1.644,2.878-6.021,5.151-12.111,7.917c-4.825,2.191-12.635,4.242-18.501,4.877c0.587,1.78,1.59,4.951,2.842,8.288c1.156,3.082,2.127,7.941,2.679,12.28c7.985-5.969,25.61-13.901,37.272-15.479C1321.674,637.721,1318.034,634.687,1315.5,628.25z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-wrist-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana113"
+                                            className="back-wrist-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M852.091,619.094c-2.638,8.02-5.324,14.679-7.175,17.073c-0.801,1.037-2.903,2.156-5.535,3.241c10.734,1.056,27.465,8.22,36.476,14.186c0.177-2.485,0.761-5.597,3.311-11.76c0.822-1.987,2.008-4.538,3.435-7.469c-5.758-0.728-13.076-2.69-17.679-4.78C857.133,626.047,852.131,623.319,852.091,619.094z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-wrist-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana114"
+                                            className="back-hand-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1364,661.25c-2.167-1.833-3.25-5.75-5.166-6.583c-4.294-1.868-5.833-3.5-10.167-5.667c-2.845-1.422-7.706-4.102-16-6.833c-2.291-0.755-4.781-1.438-7.216-2.616c-11.662,1.579-29.287,9.511-37.272,15.479c0.284,2.231,0.459,4.328,0.487,5.97c0.083,4.833,2.75,18,3.25,22.417s0.501,11.75,3.001,17.583s1.5,11.084,3.333,14.084s2.25,6.25,5.167,11.333s5.166,5.583,6.416,2.166s0-8.167-0.833-9.917s-1.917-7.582-2.334-10.416s-1.583-7.583-0.75-9.833s3.167,2.417,3.334,4.5s1.416,12.333,2.083,16.333s2.25,14.083,3.417,19.083s4.5,8.584,6.833,7.084s2.75-6.834,2.583-9.084s-1.416-12.499-1.583-15.583s-1.666-15.75-1.916-17.5s2.25-1.583,2.75,0.584c0.5,2.166,2.083,9.583,2.833,13c0.75,3.416,2.916,15.416,3.666,21.666s4.917,10.25,7.5,10.417s3.084-6.667,3.167-9.167s-1-12.5-1.5-15.333s-4.25-24.833-3.167-24.833s3.584,14.75,4.834,21.25s2.75,13,6.667,13.083s3.25-4.833,3.416-12.75s-0.75-13.917-2.333-25.25s-3.333-17.917-4.417-22s-3.166-10.75-2.083-12.583s7.5,1.667,11.333,5.167s10.834,4.5,13.25,2.5S1366.167,663.083,1364,661.25z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-hand-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana115"
+                                            className="back-hand-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M824.75,644.167c-5.917,1.667-7.083,4.167-11.833,6.417s-9.75,6.167-10.417,7.25s-2.75,2.917-5.166,5.667c-2.417,2.75-0.834,5.583,1.833,6.417s7.75-0.5,11.25-3.333s6.75-4.667,9.167-5.75c2.416-1.083,3.416,0.417,3.666,2.083s-2.583,9.583-4,14s-1.416,6.833-1.916,10.5s-2.584,12.917-3.25,17.667c-0.667,4.75-1.418,14.416-1.5,19.25c-0.084,4.834,0.832,8.75,3.332,9.083s4.584-2,5.334-5.667s2.5-10.084,2.916-13.834c0.417-3.75,2.584-12.666,3.084-14.332c0.5-1.667,2.084-1.084,1.834,0.35c-0.25,1.435-1,5.482-1.5,8.15c-0.5,2.666-2.417,13.5-3.084,17.166s-1.5,14-1.334,18.167c0.167,4.167,2.834,6,5.168,4.833c2.333-1.167,4.582-6.5,5.332-10.75s2.168-10,3-15.25c0.834-5.25,2.918-15.083,4-18.583c1.084-3.5,2.418-0.917,2.334,0.917c-0.084,1.833-0.834,4.333-1,8.916s-1,15.584-1.5,19.834s-1.416,11,1.584,12.166s5.166-2.5,6.416-6.166s2.417-12.084,3.417-16.75c1-4.667,2.083-15.334,2.833-18.834s2.084-6.25,2.917-5.666c0.833,0.583,0.75,3.916,0,7.583s-1.667,9.75-2.667,13.5s-3.25,10.083,0,11.417s5.584-3.917,7-7.584s2.917-6.416,4.084-11c1.166-4.584,1.666-3.375,3.416-12.066c1.75-8.69,1.375-11.309,3.125-21.059s2.709-17.208,3.041-21.208c0.121-1.45,0.091-2.661,0.19-4.074c-9.011-5.966-25.741-13.13-36.476-14.186C834.767,641.309,828.518,643.105,824.75,644.167z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-hand-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana116"
+                                            className="back-hamstring-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1093.217,740.125c0.668,1.323,0.02,1.214-0.05,3.376c-0.083,2.583-0.833,6.832-0.333,16.332s3,33.5,6.166,48.667s3.5,45.5,3.166,59.333c-0.333,13.833-1.832,43.333-2,53c-0.1,5.755,0.215,21.138,0.662,35.072c8.068,8.271,22.294,10.98,36.449,10.092c13.415-0.841,28.719-4.327,41.309-20.48c1.438-8.746,2.678-16.652,3.081-21.016c1-10.833,4.5-31.167,6.5-44.667s9.166-56.5,11.5-71.5s8.333-44.334,9.833-70c0.396-6.763,0.437-13.557,0.238-20.24C1180.306,756.63,1131.635,775.946,1093.217,740.125z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-hamstring-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana117"
+                                            className="back-hamstring-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M955.291,716.701c-0.029,2.288-0.041,4.48-0.041,6.549c0,17.5,1.75,35.25,3.75,48s13.25,79.25,16,96.25c2.169,13.408,7.447,52.006,11.381,76.551c12.795,17.416,28.61,21.08,42.423,21.946c13.647,0.857,27.359-1.631,35.557-9.223c0.568-15.524,0.901-32.5,0.64-40.274c-0.5-14.833-2.25-56-2.125-67.875s2.625-35,4.25-43.75s4.959-31.457,5.209-41.624s0-17-0.167-20c-0.062-1.098-0.042-1.912,0.078-2.55C1033.463,776.164,984.449,755.951,955.291,716.701z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-hamstring-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana118"
+                                            className="back-knee-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1137.277,965.997c-14.155,0.889-28.381-1.82-36.449-10.092c0.304,9.472,0.668,18.274,1.006,22.928c0.833,11.5,5.832,24.167,5.832,40.667c0,3.606-0.085,6.959-0.251,10.211c5.991-5.396,22.928-10.366,35.706-11.734c11.358-1.217,24.285,0.894,30.771,10.978c-0.72-4.93-1.486-9.509-2.059-13.453c-1.5-10.333-0.334-21.167,1.166-34.334c0.896-7.864,3.456-22.682,5.586-35.65C1165.996,961.67,1150.692,965.156,1137.277,965.997z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-knee-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana119"
+                                            className="back-knee-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1028.804,965.997c-13.813-0.866-29.628-4.53-42.423-21.946c1.054,6.575,2.012,12.146,2.786,15.949c3.667,18,2.667,23.833,4.167,33s0.833,17.5-1.667,33.5c-0.191,1.223-0.35,2.636-0.485,4.176c6.072-11.57,19.8-13.982,31.779-12.699c12.366,1.323,28.625,6.021,35.092,11.214c-0.223-4.039-0.335-7.883-0.386-11.357c-0.167-11.5,3.5-22.5,4.833-30.333c0.635-3.728,1.344-16.629,1.86-30.726C1056.163,964.366,1042.451,966.854,1028.804,965.997z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-knee-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana120"
+                                            className="back-calf-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1143.121,1017.977c-12.778,1.368-29.715,6.339-35.706,11.734c-0.594,11.627-2.289,21.885-5.415,37.122c-4,19.5-2.166,39.5-0.166,53.834s3,38.5,6.166,63.5c0.523,4.132,1.001,8.069,1.438,11.864c4.719,8.662,14.691,13.389,24.104,12.99c8.9-0.377,19.338-2.587,24.836-8.479c3.605-15.573,7.638-32.348,9.79-44.542c4-22.666,5.5-50.667,5.5-59.167s2.166-28.333,2.333-42.333c0.104-8.655-0.94-17.563-2.107-25.547C1167.406,1018.87,1154.479,1016.76,1143.121,1017.977z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-calf-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana121"
+                                            className="back-calf-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M991.182,1030.676c-1.645,18.618,0.485,58.332,0.485,68.491c0,11,3.167,52.833,8,69.666c2.067,7.199,4.53,18.583,6.868,30.301c5.065,6.956,16.429,9.481,26.006,9.888c9.072,0.384,18.664-3.994,23.571-12.067c0.954-9.137,1.891-17.886,2.388-23.787c1.333-15.833,6.334-57.667,7-66.834s-0.166-34.5-3.5-48c-2.326-9.421-3.433-19.813-3.947-29.143c-6.467-5.192-22.726-9.891-35.092-11.214C1010.981,1016.693,997.254,1019.105,991.182,1030.676z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-calf-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana122"
+                                            className="back-ankle-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1109.438,1196.031c2.207,19.166,3.259,34.28,2.563,47.636c-0.408,7.827-3.25,15-5.416,22.25c-2.167,7.25-0.167,12.749,1.166,16.666s1.584,7,0.584,11.5s1.25,14.084,1.416,19.084c0.101,3.019,0.029,7.617,1.324,12.31c5.011-8.101,30.007-8.45,35.653,6.138c0.716-0.778,1.365-1.59,1.947-2.401c0.425-6.792,0.573-15.504,0.342-18.777c-0.809-11.434-1.615-18.82,1.506-29.082c-0.119-0.115-0.241-0.226-0.355-0.353c-1.5-1.667-1-7.333-1.333-10.667s0.5-18.833,2.666-36c1.001-7.932,3.781-20.418,6.877-33.791c-5.498,5.892-15.936,8.102-24.836,8.479C1124.129,1209.42,1114.156,1204.693,1109.438,1196.031z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-ankle-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana123"
+                                            className="back-ankle-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1032.541,1209.021c-9.577-0.406-20.94-2.932-26.006-9.888c3.129,15.682,6.034,31.961,7.465,39.616c2.5,13.375,2.667,35.916,2.084,40c-0.145,1.009-0.375,1.654-0.679,2.092c3.308,10.532,2.482,17.97,1.66,29.594c-0.249,3.515-0.06,13.297,0.44,20.242c0.507,0.56,1.034,1.105,1.598,1.626c4.882-14.596,28.534-15.045,35.094-7.896c1.65-5.945,1.032-11.148,2.053-18.408c1.125-8-0.125-13.125-0.5-16.625s1.875-5.125,3.375-12.125s-1.125-12.875-3-19.625s-2.458-13.625-2.958-22.959c-0.313-5.855,1.34-22.334,2.945-37.712C1051.205,1205.027,1041.613,1209.405,1032.541,1209.021z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-ankle-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana124"
+                                            className="back-sole-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1111.074,1325.477c0.85,3.079,2.283,6.199,4.76,8.939c6.25,6.916,20.083,3.834,25.833,1.084c1.966-0.94,3.644-2.342,5.061-3.886C1141.081,1317.026,1116.085,1317.376,1111.074,1325.477z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-sole-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana125"
+                                            className="back-sole-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1019.104,1332.304c4.011,3.708,9.41,6.354,16.021,6.821c10.625,0.75,16.125-6.125,18.5-12.875c0.22-0.625,0.403-1.236,0.572-1.842C1047.638,1317.259,1023.985,1317.708,1019.104,1332.304z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-sole-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana126"
+                                            className="back-foot-rt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1149.017,1310.436c0.231,3.273,0.083,11.985-0.342,18.777c1.638-2.285,2.762-4.545,3.409-5.88c1.334-2.75,9.5-11.333,12.75-14.916s2.499-5.084,2.499-7.084s2-2,2.5-5.333s-1.833-4.833-2.916-5.583s-4.084-0.75-4.25-1.417s-1.25-1.917-3.167-2.917s-4,0.667-4.917-1.083c-0.847-1.617-2.613-2.247-4.061-3.646C1147.401,1291.615,1148.208,1299.002,1149.017,1310.436z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-foot-rt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          <path
+                                            transform="translate(-370)"
+                                            id="ana127"
+                                            className="back-foot-lt"
+                                            fill="#ff00005c"
+                                            stroke="#ff8080"
+                                            vectorEffect="non-scaling-stroke"
+                                            d="M1017.065,1310.436c0.822-11.624,1.647-19.062-1.66-29.594c-0.925,1.334-2.522,0.714-4.405,2.408c-1.34,1.206-1.584,2.583-3.834,2.667s-4.666,2.25-5.5,3.75c-0.833,1.5-2.749,0.25-4.916,1.416s-3,3.667-2.416,6.25c0.583,2.583,2.333,3.25,2.416,4.917s1,4.25,3.75,7.75s9.25,7.25,12.875,14.625c1.053,2.142,2.442,4.193,4.131,6.053C1017.006,1323.732,1016.816,1313.95,1017.065,1310.436z"
+                                            cursor="pointer"
+                                            style={
+                                               {
+                                                    fill: bodyPartsArray.includes(
+                                                      "back-foot-lt"
+                                                    )
+                                                      ? "#ff00005c"
+                                                      : "rgba(255, 0, 0, 0)",
+                                                  }
+                                                
+                                            }
+                                          />
+                                          {/* <rect
+                                transform="translate(332,15)"
+                                className="goa"
+                                x="587.5"
+                                y="1023.5"
+                                fill="#72B8FC"
+                                stroke="#6a6a6a"
+                                vectorEffect="non-scaling-stroke"
+                                width={287}
+                                height={272}
+                              />
+                              <image
+                                xlinkHref="images/modelb.png"
+                                x="71%"
+                                y="78%"
+                                height="200px"
+                                width="140px"
+                              />
+                              <g id="anaspotsb">
+                                <circle
+                                  cx={319}
+                                  cy={521}
+                                  r={20}
+                                  fill="#ff6600"
+                                  stroke="#cc2900"
+                                  strokeWidth={1}
+                                  id="anaspotsb_0"
+                                  cursor="pointer"
+                                  display="none"
+                                />
+                                <circle
+                                  cx={939}
+                                  cy={413}
+                                  r={15}
+                                  fill="rgba(255, 0, 0, 0.3)"
+                                  stroke="#FF0000"
+                                  strokeWidth={1}
+                                  id="anaspotsb_1"
+                                  cursor="pointer"
+                                  display="none"
+                                />
+                              </g> */}
+                                        </svg>
+                                      </div>
+                                      {/* baseb*/}
+                                    </>
+                                  )}
+                                </div>
+                                <div className="clear" />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <h2>Reason</h2>
+                      {avatarBodyparts?.getAllAvatarCoordinate?.avatarReason ||
+                        "N/A"}
+                    </div>
+                  </>
+                )}
+              </>
+              {/* );
+            }
+          )} */}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="p-4">
+              <h2 className="mt-3">Follow-up reason</h2>
+              {getFollowUpReasonByAppointmentId
+                ?.getFollowUpReasonByAppointmentId?.data?.followUpReason ||
+                "N/A"}
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+};
+// const MALE_DATA_LIST = [
+//   {
+
+//   }
+// ]
