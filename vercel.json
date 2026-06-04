@@ -2,5 +2,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": "nextjs",
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "npm install --legacy-peer-deps",
+  "env": {
+    "NEXTAUTH_URL": "https://emr-ruddy-iota.vercel.app",
+    "NEXTAUTH_SECRET": "asdfasdf12341234",
+    "NEXTAUTH_URL_INTERNAL": "https://emr-ruddy-iota.vercel.app"
+  }
 }
