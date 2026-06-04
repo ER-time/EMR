@@ -17,9 +17,8 @@ export const options = {
         console.log("credentials", credentials);
 
         try {
-          // Your API call code here
           const response = await fetch(
-            `https://medicalaiapi.xeventechnologies.com/api/registration/verifyOTPCode?email=${credentials?.email}&code=${credentials?.otpCode}`,
+            `https://medicalaiapi.xeventechnologies.com/api/registration/verifyOTPCode?email=${credentials?.email}&code=${credentials?.otpCode || "000000"}`,
             {
               method: "POST",
               headers: {
@@ -30,7 +29,7 @@ export const options = {
           );
 
           const user = await response.json();
-          console.log("API Response:", user); // Log the response data
+          console.log("API Response:", user);
           if (user) {
             const customResponse = {
               success: true,
@@ -39,12 +38,12 @@ export const options = {
                 ...user?.data,
               },
             };
-
-            console.log("customResponse", customResponse);
-
             return customResponse;
           } else return null;
-          return null;
+        } catch (error) {
+          console.error("API Error:", error);
+        }
+        return null;
         } catch (error) {
           console.error("API Error:", error);
         }

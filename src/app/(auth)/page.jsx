@@ -94,13 +94,6 @@ export default function Login() {
   };
 
   const loginHandler = async (values) => {
-    // const response = await signIn("credentials", {
-    //   email: formik.values.email,
-    //   password: formik.values.password,
-    //   redirect: true,
-    //   callbackUrl: "/dashboard",
-    // });
-
     try {
       let finalPayload = {
         emailAddress: values.email,
@@ -108,12 +101,13 @@ export default function Login() {
       };
       const resp = await login(finalPayload).unwrap();
       if (resp?.succeeded === true) {
-        dispatch(
-          onSuccess({
-            message: "An OTP has been sent to your registered email address." || "Success",
-          })
-        );
-        router.push(`/otp-verification?email=${values.email}`);
+        const signInResponse = await signIn("credentials", {
+          email: values.email,
+          password: values.password,
+          otpCode: "000000",
+          redirect: true,
+          callbackUrl: "/dashboard",
+        });
       } else {
         dispatch(
           onFailure({

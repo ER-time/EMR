@@ -13,20 +13,16 @@ const nextConfig = {
         protocol: "https",
         hostname: "ioctane.nyc3.digitaloceanspaces.com",
         port: "",
-        pathname: "**", // Allow images from any path
+        pathname: "**",
       },
     ],
-    // domains: [
-    //   'ioctane.nyc3.digitaloceanspaces.com'
-    // ],
-    // unoptimized: true,
   },
 
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
 };
+
+module.exports = nextConfig;
 
 module.exports = nextConfig;
