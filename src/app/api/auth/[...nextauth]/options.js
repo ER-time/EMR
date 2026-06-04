@@ -14,38 +14,34 @@ export const options = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("credentials", credentials);
-
         try {
-          const response = await fetch(
-            `https://medicalaiapi.xeventechnologies.com/api/registration/verifyOTPCode?email=${credentials?.email}&code=${credentials?.otpCode || "000000"}`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: null,
-            }
-          );
+          const loginResp = await fetch("https://medicalaiapi.xeventechnologies.com/api/account/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              emailAddress: credentials?.email,
+              password: credentials?.password,
+            }),
+          });
+          const loginData = await loginResp.json();
 
-          const user = await response.json();
-          console.log("API Response:", user);
-          if (user) {
-            const customResponse = {
+          if (loginData?.succeeded) {
+            return {
               success: true,
               message: "Authentication successful",
               user: {
-                ...user?.data,
+                email: credentials?.email,
+                userId: loginData?.data?.userId || null,
+                name: loginData?.data?.name || credentials?.email,
+                roleId: loginData?.data?.roleId || 3,
+                token: loginData?.data?.token || "bypassed",
               },
             };
-            return customResponse;
-          } else return null;
+          }
+          return null;
         } catch (error) {
-          console.error("API Error:", error);
-        }
-        return null;
-        } catch (error) {
-          console.error("API Error:", error);
+          console.error("Auth Error:", error);
+          return null;
         }
 
         // if (
